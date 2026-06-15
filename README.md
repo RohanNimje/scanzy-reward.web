@@ -1,0 +1,1 @@
+# scanzy-rewards.web
