@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ============================================================
+    HEAD — Meta, SEO, Fonts, Icons, and Stylesheet
+    All page metadata lives here. Changing the title/description
+    here updates what shows in browser tabs and search engines.
+  ============================================================ -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO: Title and description shown in Google search results -->
+  <title>ScanZy Rewards — Unlocking Repeat Revenue for Modern Retail</title>
+  <meta name="description" content="ScanZy Rewards is the B2B loyalty platform for ambitious shopkeepers. Zero app downloads, instant rewards, and data-driven insights that turn one-time buyers into lifelong customers.">
+
+  <!-- Favicon (the little icon in the browser tab) -->
+  <link rel="icon" href="https://res.cloudinary.com/doyiqcna9/image/upload/v1774086159/ScanZy-Logo_2_-Photoroom_aoz3if.png">
+  <link rel="apple-touch-icon" href="https://res.cloudinary.com/doyiqcna9/image/upload/v1774086159/ScanZy-Logo_2_-Photoroom_aoz3if.png">
+
+  <!-- Google Fonts: Geist (same as original Next.js project) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons CDN — provides all the small icons used on the page.
+       This replaces the lucide-react npm package from the Next.js project.
+       Usage: <i data-lucide="icon-name"></i> — icons are injected by script.js -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- Main stylesheet (all colors, layouts, and animations) -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============================================================
+    NAVBAR
+    Fixed at the top of the page at all times.
+    • Logo on the left
+    • Nav links in the center (desktop only)
+    • "Login Portal" button on the right (desktop only)
+    • Hamburger menu button (mobile only)
+    JavaScript behavior: see initNavbarScroll() and initMobileMenu() in script.js
+  ============================================================ -->
+  <header id="navbar" role="banner">
+    <div class="nav-container">
+      <!-- The pill-shaped card that wraps the entire navbar content -->
+      <div class="nav-pill">
+
+        <!-- LOGO — icon + "ScanZy" wordmark + "Rewards" badge -->
+        <a href="#top" class="nav-logo" aria-label="ScanZy Rewards — go to homepage">
+          <div class="nav-logo-icon-wrap">
+            <!-- Hover glow behind the logo icon -->
+            <span class="nav-logo-glow" aria-hidden="true"></span>
+            <img
+              src="https://res.cloudinary.com/doyiqcna9/image/upload/v1780376600/ScanZy_logo_rm-bg_cdxdtp.png"
+              alt=""
+              width="44"
+              height="44"
+            >
+          </div>
+          <div class="nav-logo-text">
+            <span class="nav-logo-name">ScanZy</span>
+            <!-- Divider and "Rewards" badge are hidden on very small screens -->
+            <span class="nav-logo-divider" aria-hidden="true"></span>
+            <span class="nav-logo-badge">Rewards</span>
+          </div>
+        </a>
+
+        <!-- DESKTOP NAVIGATION LINKS — hidden on mobile via CSS -->
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#how-it-works" class="nav-link">How it works</a>
+          <a href="#features"     class="nav-link">Features</a>
+          <a href="#marquee"      class="nav-link">For Brands</a>
+        </nav>
+
+        <!-- ACTION AREA — Login button (desktop) + Hamburger (mobile) -->
+        <div class="nav-actions">
+
+          <!-- "Login Portal" button — only visible on desktop (md+).
+               Clicking this opens the login modal overlay. -->
+          <button
+            id="login-btn-desktop"
+            class="btn-login-desktop open-login-modal"
+            aria-label="Open login portal"
+            aria-haspopup="dialog"
+          >
+            <span>Login Portal</span>
+            <i data-lucide="arrow-up-right" style="width:16px;height:16px" aria-hidden="true"></i>
+            <!-- Shimmer that sweeps across on hover -->
+            <span class="btn-shine" aria-hidden="true"></span>
+          </button>
+
+          <!-- Hamburger button — only visible on mobile.
+               Clicking toggles the mobile menu open/closed. -->
+          <button
+            id="mobile-menu-btn"
+            class="btn-hamburger"
+            aria-label="Toggle navigation menu"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+          >
+            <!-- Hamburger icon (3 lines) — shown when menu is closed -->
+            <span id="menu-icon-open" aria-hidden="true">
+              <i data-lucide="menu" style="width:20px;height:20px"></i>
+            </span>
+            <!-- X icon — shown when menu is open (toggled by JS) -->
+            <span id="menu-icon-close" aria-hidden="true" style="display:none">
+              <i data-lucide="x" style="width:20px;height:20px"></i>
+            </span>
+          </button>
+
+        </div><!-- end nav-actions -->
+      </div><!-- end nav-pill -->
+    </div><!-- end nav-container -->
+
+    <!-- MOBILE MENU — hidden by default; .open class added by JS to reveal it -->
+    <div id="mobile-menu" class="mobile-menu" role="navigation" aria-label="Mobile navigation">
+      <div class="mobile-menu-inner">
+        <nav class="mobile-nav">
+          <!-- Nav links — clicking any of them also closes the menu -->
+          <a href="#how-it-works" class="mobile-nav-link tap-scale">How it works</a>
+          <a href="#features"     class="mobile-nav-link tap-scale">Features</a>
+          <a href="#marquee"      class="mobile-nav-link tap-scale">For Brands</a>
+
+          <!-- Full-width Login button at the bottom of the mobile menu -->
+          <button
+            id="mobile-login-btn"
+            class="btn-login-mobile open-login-modal tap-scale"
+            aria-haspopup="dialog"
+          >
+            Login Portal
+            <i data-lucide="arrow-up-right" style="width:16px;height:16px" aria-hidden="true"></i>
+          </button>
+        </nav>
+      </div>
+    </div><!-- end mobile-menu -->
+
+  </header><!-- end navbar -->
+
+
+  <!-- ============================================================
+    LOGIN MODAL
+    A full-screen overlay (dialog) that slides over the page.
+    Contains two portal options: Shopkeeper and Super Admin.
+
+    How it works:
+    • Starts invisible (opacity:0, pointer-events:none)
+    • JS adds .open class to make it visible
+    • Click outside the box OR press Escape to close
+    • See initLoginModal() in script.js
+  ============================================================ -->
+  <div
+    id="login-modal"
+    class="modal-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title"
+  >
+    <!-- The actual modal box (clicking outside this closes the modal) -->
+    <div class="modal-box">
+
+      <!-- Decorative green glow at the top of the box -->
+      <div class="modal-glow" aria-hidden="true"></div>
+
+      <!-- X close button in top-right corner -->
+      <button id="modal-close-btn" class="modal-close-btn" aria-label="Close login modal">
+        <i data-lucide="x" style="width:16px;height:16px" aria-hidden="true"></i>
+      </button>
+
+      <!-- Modal header: brand tag + title + description -->
+      <div class="modal-header">
+        <div class="modal-brand">
+          <img src="https://res.cloudinary.com/doyiqcna9/image/upload/v1780376600/ScanZy_logo_rm-bg_cdxdtp.png" alt="" width="28" height="28">
+          <span class="modal-brand-label">ScanZy Rewards</span>
+        </div>
+        <h2 id="modal-title" class="modal-title">Welcome back to the Portal</h2>
+        <p class="modal-desc">Choose the portal that matches your role. Secure, SSO-ready, and audit-logged.</p>
+      </div>
+
+      <!-- Modal body: two portal option buttons -->
+      <div class="modal-body">
+
+        <!-- OPTION 1: Shopkeeper Login -->
+        <button class="portal-option">
+          <div class="portal-icon default" aria-hidden="true">
+            <i data-lucide="store" style="width:20px;height:20px"></i>
+          </div>
+          <div class="portal-info">
+            <div class="portal-title-row">
+              <span class="portal-title">Shopkeeper Login</span>
+              <span class="portal-badge">Merchant</span>
+            </div>
+            <p class="portal-desc">Verify rewards, manage your standee, and track customer visits.</p>
+          </div>
+          <i data-lucide="arrow-up-right" class="portal-arrow" style="width:20px;height:20px" aria-hidden="true"></i>
+        </button>
+
+        <!-- OPTION 2: Super Admin Login -->
+        <button class="portal-option">
+          <div class="portal-icon accent" aria-hidden="true">
+            <i data-lucide="shield-check" style="width:20px;height:20px"></i>
+          </div>
+          <div class="portal-info">
+            <div class="portal-title-row">
+              <span class="portal-title">Super Admin Login</span>
+              <span class="portal-badge accent">Admin</span>
+            </div>
+            <p class="portal-desc">Manage campaigns, sponsor ads, and organization-wide analytics.</p>
+          </div>
+          <i data-lucide="arrow-up-right" class="portal-arrow" style="width:20px;height:20px" aria-hidden="true"></i>
+        </button>
+
+        <!-- Security footnote -->
+        <p class="modal-footer-note">Protected by end-to-end encryption · SOC 2 Type II aligned</p>
+      </div>
+
+    </div><!-- end modal-box -->
+  </div><!-- end login-modal -->
+
+
+  <!-- ============================================================
+    MAIN PAGE CONTENT — all sections stacked vertically
+  ============================================================ -->
+  <main>
+
+    <!-- =========================================================
+      HERO SECTION
+      The first big section visitors see. Introduces the product
+      with a bold headline, subtext, two CTA buttons, trust stats,
+      and a floating spin-and-win card image on the right.
+    ========================================================= -->
+    <section id="top" aria-labelledby="hero-heading">
+
+      <!-- Background decorations (purely visual, hidden from screen readers) -->
+      <div class="hero-bg-radial" aria-hidden="true"></div>
+      <div class="hero-bg-grid"   aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-left"  aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-right" aria-hidden="true"></div>
+
+      <!-- Two-column grid: text on left, card image on right -->
+      <div class="hero-inner">
+
+        <!-- TEXT COLUMN: headline, subtext, CTAs, stats -->
+        <div class="hero-text">
+
+          <!-- Eyebrow: small badge above headline -->
+          <div class="hero-eyebrow hero-animate anim-fade-up">
+            <i data-lucide="sparkles" style="width:14px;height:14px" aria-hidden="true"></i>
+            New · ScanZy Rewards 2.0 — live in 1,200+ stores
+          </div>
+
+          <!-- Main headline (h1 — only one per page for SEO) -->
+          <h1 id="hero-heading" class="hero-h1 hero-animate anim-fade-up">
+            Revolutionizing&nbsp;<span class="hero-h1-gradient"><span>Retail Engagement</span><span class="hero-h1-underline" aria-hidden="true"></span></span>
+          </h1>
+
+          <!-- Subtext paragraph explaining the product -->
+          <p class="hero-subtext hero-animate anim-fade-up">
+            Turn one-time shoppers into lifelong customers. ScanZy Rewards combines a
+            zero-download QR standee, a gamified spin-to-win reward engine, and
+            enterprise-grade analytics — so every visit drives the next one.
+          </p>
+
+          <!-- CTA Buttons: primary + secondary -->
+          <div class="hero-ctas hero-animate anim-fade-up">
+            <!-- Primary: filled green button — scrolls to partner section -->
+            <a href="#partner" class="btn-primary tap-scale">
+              <span>Partner With Us</span>
+              <i data-lucide="arrow-right" style="width:16px;height:16px" aria-hidden="true"></i>
+              <span class="btn-shine" aria-hidden="true"></span>
+            </a>
+            <!-- Secondary: outlined button — scrolls to how-it-works -->
+            <a href="#how-it-works" class="btn-secondary tap-scale">
+              <i data-lucide="play-circle" style="width:16px;height:16px;color:var(--primary)" aria-hidden="true"></i>
+              See How It Works
+            </a>
+          </div>
+
+          <!-- Trust stats: three numbers that build credibility -->
+          <dl class="hero-stats hero-animate anim-fade-up">
+            <div class="hero-stat">
+              <dt class="hero-stat-key">+38%</dt>
+              <dd class="hero-stat-val">Avg. repeat visits</dd>
+            </div>
+            <div class="hero-stat">
+              <dt class="hero-stat-key">2.1M+</dt>
+              <dd class="hero-stat-val">Scans powered</dd>
+            </div>
+            <div class="hero-stat">
+              <dt class="hero-stat-key">0 apps</dt>
+              <dd class="hero-stat-val">Customer download</dd>
+            </div>
+          </dl>
+
+        </div><!-- end hero text column -->
+
+        <!-- CARD IMAGE COLUMN: floating spin & win card with overlaid badges -->
+        <div class="hero-card-col">
+          <div class="card-mockup-wrap hero-card-animate anim-scale-in">
+
+            <!-- Ambient green glow blob behind the card -->
+            <div class="card-mockup-glow" aria-hidden="true"></div>
+
+            <!-- The main card image — floats up and down via CSS animation -->
+            <div class="card-mockup-img-wrap">
+              <img
+                src="https://res.cloudinary.com/doyiqcna9/image/upload/v1780456961/Spin_win_gift_card_design_1_hsyvke.png"
+                alt="ScanZy Spin & Win gift card with QR code"
+                width="400" height="400"
+              >
+            </div>
+
+            <!-- Floating badge: "Reward unlocked" — top-left of the card -->
+            <div class="hero-badge hero-badge-left anim-slide-left" aria-hidden="true">
+              <span class="badge-icon">
+                <i data-lucide="gift" style="width:16px;height:16px"></i>
+              </span>
+              <div>
+                <div class="badge-label">Reward unlocked</div>
+                <div class="badge-value">₹200 off — Loyal Customer</div>
+              </div>
+              <!-- Pulsing green dot (live indicator) -->
+              <span class="badge-dot"></span>
+            </div>
+
+            <!-- Floating badge: "Scans today" — bottom-right of the card -->
+            <div class="hero-badge hero-badge-right anim-slide-right" aria-hidden="true">
+              <span class="badge-icon">
+                <i data-lucide="qr-code" style="width:16px;height:16px"></i>
+              </span>
+              <div>
+                <div class="badge-label">Scans today</div>
+                <div class="badge-value">1,284</div>
+              </div>
+            </div>
+
+          </div><!-- end card-mockup-wrap -->
+        </div><!-- end hero-card-col -->
+
+      </div><!-- end hero-inner -->
+    </section><!-- end #top hero -->
+
+
+    <!-- =========================================================
+      MARQUEE SECTION
+      A continuously scrolling strip that shows product highlights.
+      Items are duplicated so the scroll loops seamlessly.
+      Pauses on mouse hover.
+    ========================================================= -->
+    <section id="marquee" aria-label="Product highlights">
+
+      <!-- Left and right gradient fades (make it look like infinite scroll) -->
+      <div class="marquee-fade-left"  aria-hidden="true"></div>
+      <div class="marquee-fade-right" aria-hidden="true"></div>
+
+      <!-- Overflow hidden wrapper prevents chips from showing outside bounds -->
+      <div style="overflow:hidden; display:flex">
+        <!-- marquee-track: this div scrolls continuously via CSS animation.
+             It contains BOTH sets of chips (original + duplicate) so when
+             the first set scrolls off-screen, the second takes its place. -->
+        <div class="marquee-track" role="list" aria-label="Feature highlights">
+
+          <!-- ---- First set of chips ---- -->
+          <div class="marquee-chip" role="listitem">
+            <span class="chip-icon"><i data-lucide="smartphone" style="width:14px;height:14px" aria-hidden="true"></i></span>
+            <span>Zero App Download</span>
+            <span class="chip-dot" aria-hidden="true"></span>
+          </div>
+          <div class="marquee-chip" role="listitem">
+            <span class="chip-icon"><i data-lucide="line-chart" style="width:14px;height:14px" aria-hidden="true"></i></span>
+            <span>Data-Driven Insights</span>
+            <span class="chip-dot" aria-hidden="true"></span>
+          </div>
+          <div class="marquee-chip" role="listitem">
+            <span class="chip-icon"><i data-lucide="zap" style="width:14px;height:14px" aria-hidden="true"></i></span>
+            <span>Instant Rewards</span>
+            <span class="chip-dot" aria-hidden="true"></span>
+          </div>
+          <div class="marquee-chip" role="listitem">
+            <span class="chip-icon"><i data-lucide="users" style="width:14px;height:14px" aria-hidden="true"></i></span>
+            <span>Increase Walk-ins</span>
+            <span class="chip-dot" aria-hidden="true"></span>
+          </div>
+          <div class="marquee-chip" role="listitem">
+            <span class="chip-icon"><i data-lucide="megaphone" style="width:14px;height:14px" aria-hidden="true"></i></span>
+            <span>Ad Revenue Engine</span>
+            <span class="chip-dot" aria-hidden="true"></span>
+          </div>
+          <div class="marquee-chip" role="listitem">
+            <span class="chip-icon"><i data-lucide="shield-check" style="width:14px;height:14px" aria-hidden="true"></i></span>
+            <span>Fraud-Proof PIN Verify</span>
+            <span class="chip-dot" aria-hidden="true"></span>
+          </div>
+          <div class="marquee-chip" role="listitem">
+            <span class="chip-icon"><i data-lucide="gift" style="width:14px;height:14px" aria-hidden="true"></i></span>
+            <span>Gamified Loyalty</span>
+            <span class="chip-dot" aria-hidden="true"></span>
+          </div>
+          <div class="marquee-chip" role="listitem">
+            <span class="chip-icon"><i data-lucide="bar-chart-3" style="width:14px;height:14px" aria-hidden="true"></i></span>
+            <span>Live Campaign Analytics</span>
+            <span class="chip-dot" aria-hidden="true"></span>
+          </div>
+
+          <!-- ---- Duplicate set (hidden from screen readers, needed for seamless loop) ---- -->
+          <div class="marquee-chip" aria-hidden="true">
+            <span class="chip-icon"><i data-lucide="smartphone" style="width:14px;height:14px"></i></span>
+            <span>Zero App Download</span><span class="chip-dot"></span>
+          </div>
+          <div class="marquee-chip" aria-hidden="true">
+            <span class="chip-icon"><i data-lucide="line-chart" style="width:14px;height:14px"></i></span>
+            <span>Data-Driven Insights</span><span class="chip-dot"></span>
+          </div>
+          <div class="marquee-chip" aria-hidden="true">
+            <span class="chip-icon"><i data-lucide="zap" style="width:14px;height:14px"></i></span>
+            <span>Instant Rewards</span><span class="chip-dot"></span>
+          </div>
+          <div class="marquee-chip" aria-hidden="true">
+            <span class="chip-icon"><i data-lucide="users" style="width:14px;height:14px"></i></span>
+            <span>Increase Walk-ins</span><span class="chip-dot"></span>
+          </div>
+          <div class="marquee-chip" aria-hidden="true">
+            <span class="chip-icon"><i data-lucide="megaphone" style="width:14px;height:14px"></i></span>
+            <span>Ad Revenue Engine</span><span class="chip-dot"></span>
+          </div>
+          <div class="marquee-chip" aria-hidden="true">
+            <span class="chip-icon"><i data-lucide="shield-check" style="width:14px;height:14px"></i></span>
+            <span>Fraud-Proof PIN Verify</span><span class="chip-dot"></span>
+          </div>
+          <div class="marquee-chip" aria-hidden="true">
+            <span class="chip-icon"><i data-lucide="gift" style="width:14px;height:14px"></i></span>
+            <span>Gamified Loyalty</span><span class="chip-dot"></span>
+          </div>
+          <div class="marquee-chip" aria-hidden="true">
+            <span class="chip-icon"><i data-lucide="bar-chart-3" style="width:14px;height:14px"></i></span>
+            <span>Live Campaign Analytics</span><span class="chip-dot"></span>
+          </div>
+
+        </div><!-- end marquee-track -->
+      </div><!-- end overflow wrapper -->
+    </section><!-- end #marquee -->
+
+
+    <!-- =========================================================
+      HOW IT WORKS SECTION
+      Three step cards explaining the full customer journey:
+      1. Scan QR → 2. Spin & Win → 3. PIN verification
+    ========================================================= -->
+    <section id="how-it-works" aria-labelledby="hiw-title">
+
+      <!-- Subtle grid decoration in the background -->
+      <div class="section-bg-grid" aria-hidden="true"></div>
+
+      <div class="section-inner">
+
+        <!-- Section header: eyebrow + title + subtitle -->
+        <div class="section-header scroll-animate anim-fade-up">
+          <div class="section-eyebrow">
+            <i data-lucide="sparkles" style="width:12px;height:12px" aria-hidden="true"></i>
+            How it works
+          </div>
+          <h2 id="hiw-title" class="section-title">Three steps to a full loyalty loop</h2>
+          <p class="section-subtitle">
+            From standee to spin to secure redemption — every interaction is tracked,
+            measured, and optimized for the next visit.
+          </p>
+        </div>
+
+        <!-- Steps carousel viewport + numbered indicators
+             Mobile (<768px): Embla-style carousel with numbered indicators
+             md+ (768px+)   : Standard 3-column grid (original layout) -->
+        <div class="steps-carousel-viewport" style="margin-top:3.5rem" id="steps-carousel">
+          <ol class="steps-grid">
+
+          <!-- STEP 1: Scan the QR Standee -->
+          <li class="step-card scroll-animate anim-fade-up">
+            <!-- Hover glow decoration -->
+            <div class="step-card-glow" aria-hidden="true"></div>
+
+            <!-- Step label + icon row -->
+            <div class="step-header">
+              <span class="step-label">STEP 01</span>
+              <span class="step-icon" aria-hidden="true">
+                <i data-lucide="qr-code" style="width:20px;height:20px"></i>
+              </span>
+            </div>
+
+            <!-- Visual illustration: fake QR code standee -->
+            <div class="step-visual" aria-hidden="true">
+              <div class="standee-visual">
+                <!-- Triangle background pattern -->
+                <div class="standee-bg-pattern"></div>
+                <!-- Wavy green wave shape at the bottom -->
+                <svg class="standee-wave" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="wave-grad" x1="0" x2="1">
+                      <stop offset="0%"   stop-color="oklch(0.82 0.22 142)" stop-opacity="0.4"/>
+                      <stop offset="100%" stop-color="oklch(0.82 0.22 142)" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M0 220 Q 100 140 220 190 T 400 170 L 400 300 L 0 300 Z" fill="url(#wave-grad)"/>
+                </svg>
+                <!-- QR code mockup -->
+                <div class="qr-wrapper">
+                  <div class="qr-box">
+                    <!-- JavaScript fills this grid with 64 squares to form a QR pattern -->
+                    <div id="qr-grid" class="qr-grid"></div>
+                  </div>
+                  <div class="standee-label">Scan to Spin</div>
+                </div>
+              </div>
+            </div>
+
+            <h3 class="step-title">Scan the QR Standee</h3>
+            <p class="step-desc">
+              Customers scan the ScanZy standee at your counter — no downloads, no friction.
+              They land on a branded, mobile-first web experience in under 1.2s.
+            </p>
+            <div class="step-more">
+              Learn more
+              <i data-lucide="arrow-right" style="width:14px;height:14px" aria-hidden="true"></i>
+            </div>
+          </li><!-- end step 1 -->
+
+          <!-- STEP 2: Spin the Wheel & Win -->
+          <li class="step-card scroll-animate anim-fade-up" style="transition-delay: 0.1s">
+            <div class="step-card-glow" aria-hidden="true"></div>
+            <div class="step-header">
+              <span class="step-label">STEP 02</span>
+              <span class="step-icon" aria-hidden="true">
+                <i data-lucide="gift" style="width:20px;height:20px"></i>
+              </span>
+            </div>
+
+            <!-- Visual illustration: spinning prize wheel -->
+            <div class="step-visual" aria-hidden="true">
+              <div class="spin-visual">
+                <!-- Pointer triangle above the wheel -->
+                <div class="spin-pointer"></div>
+                <!-- Spinning SVG wheel — rotated continuously by CSS animation -->
+                <div class="spin-wheel-wrap">
+                  <svg viewBox="0 0 100 100" class="spin-wheel" style="width:100%;height:100%">
+                    <defs>
+                      <!-- Gradient for the "light" segments -->
+                      <linearGradient id="seg-grad" x1="0" x2="1">
+                        <stop offset="0%"   stop-color="oklch(0.82 0.22 142)"/>
+                        <stop offset="100%" stop-color="oklch(0.65 0.22 145)"/>
+                      </linearGradient>
+                    </defs>
+                    <!-- 6 pie segments alternating between gradient and dark fill -->
+                    <!-- Segment 0: 0° → 60° (even = gradient) -->
+                    <path d="M50,50 L100,50 A50,50 0 0,1 75,93.3 Z"   fill="url(#seg-grad)"        stroke="oklch(0.17 0.015 155)" stroke-width="0.5"/>
+                    <!-- Segment 1: 60° → 120° (odd = dark) -->
+                    <path d="M50,50 L75,93.3 A50,50 0 0,1 25,93.3 Z"  fill="oklch(0.22 0.04 152)"  stroke="oklch(0.17 0.015 155)" stroke-width="0.5"/>
+                    <!-- Segment 2: 120° → 180° (even = gradient) -->
+                    <path d="M50,50 L25,93.3 A50,50 0 0,1 0,50 Z"     fill="url(#seg-grad)"        stroke="oklch(0.17 0.015 155)" stroke-width="0.5"/>
+                    <!-- Segment 3: 180° → 240° (odd = dark) -->
+                    <path d="M50,50 L0,50 A50,50 0 0,1 25,6.7 Z"      fill="oklch(0.22 0.04 152)"  stroke="oklch(0.17 0.015 155)" stroke-width="0.5"/>
+                    <!-- Segment 4: 240° → 300° (even = gradient) -->
+                    <path d="M50,50 L25,6.7 A50,50 0 0,1 75,6.7 Z"    fill="url(#seg-grad)"        stroke="oklch(0.17 0.015 155)" stroke-width="0.5"/>
+                    <!-- Segment 5: 300° → 360° (odd = dark) -->
+                    <path d="M50,50 L75,6.7 A50,50 0 0,1 100,50 Z"    fill="oklch(0.22 0.04 152)"  stroke="oklch(0.17 0.015 155)" stroke-width="0.5"/>
+                    <!-- Center hub circle -->
+                    <circle cx="50" cy="50" r="10" fill="oklch(0.17 0.015 155)" stroke="oklch(0.82 0.22 142)" stroke-width="1"/>
+                  </svg>
+                </div>
+                <div class="spin-label">Instant Reward</div>
+              </div>
+            </div>
+
+            <h3 class="step-title">Spin the Wheel &amp; Win</h3>
+            <p class="step-desc">
+              A gamified spin reveals an instant, store-specific reward. The dopamine hit drives
+              immediate reward redemption — and the next walk-in.
+            </p>
+            <div class="step-more">
+              Learn more
+              <i data-lucide="arrow-right" style="width:14px;height:14px" aria-hidden="true"></i>
+            </div>
+          </li><!-- end step 2 -->
+
+          <!-- STEP 3: Shopkeeper verifies with PIN -->
+          <li class="step-card scroll-animate anim-fade-up" style="transition-delay: 0.2s">
+            <div class="step-card-glow" aria-hidden="true"></div>
+            <div class="step-header">
+              <span class="step-label">STEP 03</span>
+              <span class="step-icon" aria-hidden="true">
+                <i data-lucide="key-round" style="width:20px;height:20px"></i>
+              </span>
+            </div>
+
+            <!-- Visual illustration: PIN verification mini UI -->
+            <div class="step-visual" aria-hidden="true">
+              <div class="pin-visual">
+                <div class="pin-card">
+                  <!-- Card header: "Verify Reward" + "Live" badge -->
+                  <div class="pin-card-header">
+                    <div class="pin-card-title-row">
+                      <span class="pin-status-dot"></span>
+                      <span class="pin-card-title">Verify Reward</span>
+                    </div>
+                    <span class="pin-live-badge">Live</span>
+                  </div>
+                  <!-- PIN entry label -->
+                  <div class="pin-label-text">Enter shopkeeper PIN</div>
+                  <!-- Four PIN input squares with dots -->
+                  <div class="pin-inputs">
+                    <div class="pin-input">•</div>
+                    <div class="pin-input">•</div>
+                    <div class="pin-input">•</div>
+                    <div class="pin-input">•</div>
+                  </div>
+                  <!-- Success confirmation row -->
+                  <div class="pin-success">
+                    <div class="pin-success-text">
+                      <i data-lucide="check" style="width:12px;height:12px" aria-hidden="true"></i>
+                      Reward verified · ₹200 off
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <h3 class="step-title">Shopkeeper verifies with PIN</h3>
+            <p class="step-desc">
+              Your team validates rewards in two taps with a rotating secure PIN. Every redemption
+              is logged, timestamped, and surfaced in the admin dashboard.
+            </p>
+            <div class="step-more">
+              Learn more
+              <i data-lucide="arrow-right" style="width:14px;height:14px" aria-hidden="true"></i>
+            </div>
+          </li><!-- end step 3 -->
+
+          </ol><!-- end steps-grid -->
+        </div><!-- end steps-carousel-viewport -->
+
+        <!-- Numbered indicators: 1 · 2 · 3
+             Only visible on mobile (<768px). JS builds these buttons.
+             Each button shows its step number and highlights the active slide. -->
+        <div class="steps-indicators" id="steps-indicators" role="tablist" aria-label="Step navigation">
+          <!-- JS injects: <button class="steps-indicator active">1</button> etc. -->
+        </div>
+     </div><!-- end section-inner -->
+    </section><!-- end #how-it-works -->
+
+
+    <!-- =========================================================
+      FEATURES SECTION
+      A bento-style grid of 4 feature cards:
+      • Data-Driven Insights (wide — 4/6 cols)
+      • Increased Revenue (narrow — 2/6 cols)
+      • Sponsor Ads Network (half — 3/6 cols)
+      • Privacy-First by Design (half — 3/6 cols)
+    ========================================================= -->
+    <section id="features" aria-labelledby="features-title">
+
+      <!-- Horizontal gradient line at the top of the section -->
+      <div class="features-top-line" aria-hidden="true"></div>
+
+      <div class="section-inner">
+
+        <!-- Section header -->
+        <div class="section-header scroll-animate anim-fade-up">
+          <div class="section-eyebrow">
+            <i data-lucide="sparkles" style="width:12px;height:12px" aria-hidden="true"></i>
+            Built for B2B
+          </div>
+          <h2 id="features-title" class="section-title">Three engines working as one</h2>
+          <p class="section-subtitle">
+            Every feature ships with privacy-first defaults. We never expose personal data —
+            only the trends you need to grow revenue.
+          </p>
+        </div>
+
+        <!-- Bento grid: responsive CSS grid (defined in style.css) -->
+        <div class="features-grid">
+
+          <!-- CARD 1: Data-Driven Insights (spans 4 cols on desktop) -->
+          <div class="feature-card feature-card-wide scroll-animate anim-fade-up">
+            <div class="feature-card-glow" aria-hidden="true"></div>
+            <div class="feature-card-header">
+              <span class="feature-icon" aria-hidden="true">
+                <i data-lucide="line-chart" style="width:20px;height:20px"></i>
+              </span>
+              <h3 class="feature-title">Data-Driven Insights</h3>
+            </div>
+            <p class="feature-desc">
+              See repeat rate, peak hours, reward performance, and cohort LTV.
+              All anonymized, all actionable.
+            </p>
+
+            <!-- Visual: animated bar chart -->
+            <div class="feature-visual" aria-hidden="true">
+              <div class="insights-header">
+                <div class="insights-metric">
+                  <div class="insights-label">Repeat visits · Last 12 weeks</div>
+                  <div class="insights-value-row">
+                    <span class="insights-value">+38.4%</span>
+                    <span class="insights-badge">▲ vs baseline</span>
+                  </div>
+                </div>
+                <!-- Legend: only shown on sm+ screens -->
+                <div class="insights-legend">
+                  <span class="legend-item">
+                    <span class="legend-dot" style="background:var(--primary)"></span> Repeat
+                  </span>
+                  <span class="legend-item">
+                    <span class="legend-dot" style="background:oklch(0.82 0.22 142 / 0.4)"></span> New
+                  </span>
+                </div>
+              </div>
+
+              <!-- Bar chart: bars animate up when this section scrolls into view.
+                   Heights are set in JavaScript via CSS custom property --bar-height -->
+              <div class="bar-chart">
+                <!-- 12 bars representing 12 weeks of data.
+                     Heights (in %): 42, 55, 38, 68, 72, 60, 88, 74, 92, 80, 96, 70 -->
+                <div class="chart-bar" style="--bar-height:42%"><div class="chart-bar-inner"></div></div>
+                <div class="chart-bar" style="--bar-height:55%"><div class="chart-bar-inner"></div></div>
+                <div class="chart-bar" style="--bar-height:38%"><div class="chart-bar-inner"></div></div>
+                <div class="chart-bar" style="--bar-height:68%"><div class="chart-bar-inner"></div></div>
+                <div class="chart-bar" style="--bar-height:72%"><div class="chart-bar-inner"></div></div>
+                <div class="chart-bar" style="--bar-height:60%"><div class="chart-bar-inner"></div></div>
+                <div class="chart-bar" style="--bar-height:88%"><div class="chart-bar-inner"></div></div>
+                <div class="chart-bar" style="--bar-height:74%"><div class="chart-bar-inner"></div></div>
+                <div class="chart-bar" style="--bar-height:92%"><div class="chart-bar-inner"></div></div>
+                <div class="chart-bar" style="--bar-height:80%"><div class="chart-bar-inner"></div></div>
+                <div class="chart-bar" style="--bar-height:96%"><div class="chart-bar-inner"></div></div>
+                <div class="chart-bar" style="--bar-height:70%"><div class="chart-bar-inner"></div></div>
+              </div>
+
+              <!-- X-axis week labels -->
+              <div class="bar-x-labels">
+                <span>W1</span><span>W4</span><span>W8</span><span>W12</span>
+              </div>
+            </div><!-- end feature-visual -->
+          </div><!-- end card 1 -->
+
+          <!-- CARD 2: Increased Revenue (spans 2 cols on desktop) -->
+          <div class="feature-card feature-card-narrow scroll-animate anim-fade-up" style="transition-delay:0.1s">
+            <div class="feature-card-glow" aria-hidden="true"></div>
+            <div class="feature-card-header">
+              <span class="feature-icon" aria-hidden="true">
+                <i data-lucide="trending-up" style="width:20px;height:20px"></i>
+              </span>
+              <h3 class="feature-title">Increased Revenue</h3>
+            </div>
+            <p class="feature-desc">
+              Gamified rewards lift repeat-visit revenue by an average of 38% in the first 60 days.
+            </p>
+
+            <!-- Visual: revenue uplift number + line chart SVG -->
+            <div class="feature-visual" aria-hidden="true">
+              <div class="revenue-visual">
+                <div>
+                  <div class="revenue-label">Avg. monthly uplift</div>
+                  <div class="revenue-value-row">
+                    <i data-lucide="circle-dollar-sign" style="width:20px;height:20px;color:var(--primary)"></i>
+                    <span class="revenue-value">1.4x</span>
+                  </div>
+                </div>
+
+                <!-- SVG line chart showing revenue growth over time -->
+                <svg viewBox="0 0 200 80" style="width:100%;height:5rem;margin-top:0.75rem" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="rev-grad" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%"   stop-color="oklch(0.82 0.22 142)" stop-opacity="0.6"/>
+                      <stop offset="100%" stop-color="oklch(0.82 0.22 142)" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <!-- Area fill under the line -->
+                  <path d="M0 60 C 30 50, 50 55, 70 45 S 110 30, 140 25 S 180 10, 200 8 L 200 80 L 0 80 Z" fill="url(#rev-grad)"/>
+                  <!-- The line itself -->
+                  <path d="M0 60 C 30 50, 50 55, 70 45 S 110 30, 140 25 S 180 10, 200 8"
+                        fill="none" stroke="oklch(0.82 0.22 142)" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+
+                <!-- X-axis labels -->
+                <div class="revenue-x-labels">
+                  <span>Jan</span><span>Jun</span><span>Dec</span>
+                </div>
+              </div>
+            </div><!-- end feature-visual -->
+          </div><!-- end card 2 -->
+
+          <!-- CARD 3: Sponsor Ads Network (spans 3 cols = half width on desktop) -->
+          <div class="feature-card feature-card-half scroll-animate anim-fade-up">
+            <div class="feature-card-glow" aria-hidden="true"></div>
+            <div class="feature-card-header">
+              <span class="feature-icon" aria-hidden="true">
+                <i data-lucide="megaphone" style="width:20px;height:20px"></i>
+              </span>
+              <h3 class="feature-title">Sponsor Ads Network</h3>
+            </div>
+            <p class="feature-desc">
+              Unlock a second revenue stream. Serve relevant, non-intrusive brand offers on
+              your own reward screen.
+            </p>
+
+            <!-- Visual: list of live sponsor slots -->
+            <div class="feature-visual" aria-hidden="true">
+              <div class="sponsor-visual">
+                <div class="sponsor-header">
+                  <div class="sponsor-label">Live sponsor slots</div>
+                  <span class="sponsor-active-badge">
+                    <i data-lucide="target" style="width:12px;height:12px"></i> 3 active
+                  </span>
+                </div>
+                <!-- Three sponsor rows -->
+                <div>
+                  <div class="sponsor-row">
+                    <div class="sponsor-brand-info">
+                      <span class="sponsor-avatar">Y</span>
+                      <div>
+                        <div class="sponsor-name">Your Brand</div>
+                        <div class="sponsor-tag">Local</div>
+                      </div>
+                    </div>
+                    <div class="sponsor-right">
+                      <span class="sponsor-cpc">CPC ₹12</span>
+                      <i data-lucide="bar-chart-3" style="width:14px;height:14px;color:var(--primary)"></i>
+                    </div>
+                  </div>
+                  <div class="sponsor-row" style="margin-top:6px">
+                    <div class="sponsor-brand-info">
+                      <span class="sponsor-avatar">P</span>
+                      <div>
+                        <div class="sponsor-name">Partner Co.</div>
+                        <div class="sponsor-tag">FMCG</div>
+                      </div>
+                    </div>
+                    <div class="sponsor-right">
+                      <span class="sponsor-cpc">CPC ₹18</span>
+                      <i data-lucide="bar-chart-3" style="width:14px;height:14px;color:var(--primary)"></i>
+                    </div>
+                  </div>
+                  <div class="sponsor-row" style="margin-top:6px">
+                    <div class="sponsor-brand-info">
+                      <span class="sponsor-avatar">P</span>
+                      <div>
+                        <div class="sponsor-name">Partner Store</div>
+                        <div class="sponsor-tag">Retail</div>
+                      </div>
+                    </div>
+                    <div class="sponsor-right">
+                      <span class="sponsor-cpc">CPC ₹9</span>
+                      <i data-lucide="bar-chart-3" style="width:14px;height:14px;color:var(--primary)"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div><!-- end feature-visual -->
+          </div><!-- end card 3 -->
+
+          <!-- CARD 4: Privacy-First by Design (spans 3 cols = half width on desktop) -->
+          <div class="feature-card feature-card-half scroll-animate anim-fade-up" style="transition-delay:0.1s">
+            <div class="feature-card-glow" aria-hidden="true"></div>
+            <div class="feature-card-header">
+              <span class="feature-icon" aria-hidden="true">
+                <i data-lucide="shield-check" style="width:20px;height:20px"></i>
+              </span>
+              <h3 class="feature-title">Privacy-First by Design</h3>
+            </div>
+            <p class="feature-desc">
+              Counts, not contacts. We only surface anonymized aggregates so you stay
+              compliant everywhere.
+            </p>
+
+            <!-- Visual: 3 privacy stats + data residency info -->
+            <div class="feature-visual" aria-hidden="true">
+              <div class="privacy-visual">
+                <!-- Stat grid: Unique Scans, Views, PII stored (0!) -->
+                <div class="privacy-stats-grid">
+                  <div class="privacy-stat">
+                    <div class="privacy-stat-label">
+                      <i data-lucide="users-2" style="width:10px;height:10px"></i>
+                      <span>Unique scans</span>
+                    </div>
+                    <div class="privacy-stat-value">12,480</div>
+                  </div>
+                  <div class="privacy-stat">
+                    <div class="privacy-stat-label">
+                      <i data-lucide="eye" style="width:10px;height:10px"></i>
+                      <span>Views</span>
+                    </div>
+                    <div class="privacy-stat-value">28,341</div>
+                  </div>
+                  <!-- Highlighted: PII stored = 0 (the key message) -->
+                  <div class="privacy-stat highlight">
+                    <div class="privacy-stat-label">
+                      <i data-lucide="shield-check" style="width:10px;height:10px"></i>
+                      <span>PII stored</span>
+                    </div>
+                    <div class="privacy-stat-value">0</div>
+                  </div>
+                </div>
+                <!-- Data residency compliance info -->
+                <div class="privacy-residency">
+                  <div class="privacy-residency-label">Data residency</div>
+                  <div class="privacy-residency-value">
+                    <span class="residency-dot"></span>
+                    India-only · GDPR-ready · DPDP compliant
+                  </div>
+                </div>
+              </div>
+            </div><!-- end feature-visual -->
+          </div><!-- end card 4 -->
+
+        </div><!-- end features-grid -->
+      </div><!-- end section-inner -->
+    </section><!-- end #features -->
+
+
+    <!-- =========================================================
+      CTA SECTION (Partner Call to Action)
+      A big card inviting shopkeepers to become partners.
+      Left: text + two buttons. Right: floating gift box image.
+    ========================================================= -->
+    <section id="partner" aria-labelledby="cta-title">
+      <div class="cta-inner">
+        <!-- The big rounded card -->
+        <div class="cta-box scroll-animate anim-fade-up">
+
+          <!-- Background decorations -->
+          <div class="cta-glow"    aria-hidden="true"></div>
+          <div class="cta-pattern" aria-hidden="true"></div>
+
+          <!-- Two-column grid -->
+          <div class="cta-grid">
+
+            <!-- LEFT: Text + buttons -->
+            <div class="cta-text">
+              <div class="cta-eyebrow">
+                <i data-lucide="shield-check" style="width:14px;height:14px" aria-hidden="true"></i>
+                Partner Program
+              </div>
+              <h2 id="cta-title" class="cta-title">Ready to unlock repeat revenue?</h2>
+              <p class="cta-desc">
+                Join 1,200+ stores already running ScanZy Rewards. Free to start, zero setup fees,
+                and a dedicated success manager for every partner.
+              </p>
+              <div class="cta-btns">
+                <!-- Primary button -->
+                <a href="#" class="btn-primary tap-scale">
+                  <span>Become a Partner</span>
+                  <i data-lucide="arrow-right" style="width:16px;height:16px" aria-hidden="true"></i>
+                  <span class="btn-shine" aria-hidden="true"></span>
+                </a>
+                <!-- Secondary button -->
+                <a href="#" class="btn-secondary tap-scale">
+                  Book a 15-min demo
+                </a>
+              </div>
+            </div><!-- end cta-text -->
+
+            <!-- RIGHT: Gift box image + floating chips -->
+            <div class="cta-image-col">
+              <!-- Glows behind the image -->
+              <div class="cta-ambient-glow" aria-hidden="true"></div>
+              <div class="cta-halo"         aria-hidden="true"></div>
+
+              <!-- Gift box image — floats up and down -->
+              <div class="cta-img-wrap">
+                <img
+                  src="https://res.cloudinary.com/doyiqcna9/image/upload/v1780457724/cta-giftbox_1_ii2rhb.jpg"
+                  alt="Glowing gift box with reward coins and a rising revenue chart"
+                  width="480" height="480"
+                >
+              </div>
+
+              <!-- Floating chip: Revenue uplift (bottom-left) -->
+              <div class="cta-chip cta-chip-bottom-left scroll-animate anim-slide-left" aria-hidden="true">
+                <span class="cta-chip-icon">
+                  <i data-lucide="trending-up" style="width:16px;height:16px"></i>
+                </span>
+                <div>
+                  <div class="cta-chip-label">Revenue uplift</div>
+                  <div class="cta-chip-value">+38% in 60 days</div>
+                </div>
+              </div>
+
+              <!-- Floating chip: Rewards claimed (top-right) -->
+              <div class="cta-chip cta-chip-top-right scroll-animate anim-slide-right" aria-hidden="true">
+                <span class="cta-chip-icon">
+                  <i data-lucide="gift" style="width:16px;height:16px"></i>
+                </span>
+                <div>
+                  <div class="cta-chip-label">Rewards claimed</div>
+                  <div class="cta-chip-value">2.1M+</div>
+                </div>
+                <span class="badge-dot" style="margin-left:0.25rem"></span>
+              </div>
+
+            </div><!-- end cta-image-col -->
+          </div><!-- end cta-grid -->
+        </div><!-- end cta-box -->
+      </div><!-- end cta-inner -->
+    </section><!-- end #partner -->
+
+
+    <!-- =========================================================
+      FOOTER
+      Contains:
+      • Brand column: logo, tagline, contact details
+      • 4 link columns: Product, Business, Company, Legal
+      • Bottom bar: copyright + social media icons
+    ========================================================= -->
+    <footer role="contentinfo">
+
+      <!-- Top gradient line (decorative) -->
+      <div class="footer-top-line" aria-hidden="true"></div>
+
+      <div class="footer-inner">
+        <!-- 5-column grid (brand = 2fr, 4 link cols = 1fr each) on desktop -->
+        <div class="footer-grid">
+
+          <!-- BRAND COLUMN -->
+          <div class="footer-brand">
+            <!-- Logo row -->
+            <div class="footer-brand-row">
+              <div class="footer-logo-wrap">
+                <img src="https://res.cloudinary.com/doyiqcna9/image/upload/v1780376600/ScanZy_logo_rm-bg_cdxdtp.png" alt="ScanZy logo" width="40" height="40">
+              </div>
+              <div class="footer-brand-info">
+                <span class="footer-brand-name">ScanZy</span>
+                <span class="footer-brand-sub">Business</span>
+              </div>
+            </div>
+            <!-- Tagline -->
+            <p class="footer-tagline">
+              ScanZy Rewards is the loyalty and engagement platform for modern retail —
+              zero apps, instant rewards, and data you can actually use.
+            </p>
+            <!-- Contact details -->
+            <address class="footer-contact">
+              <a href="mailto:partners@scanzy.app" class="footer-contact-link">
+                <i data-lucide="mail" style="width:16px;height:16px" aria-hidden="true"></i>
+                partners@scanzy.app
+              </a>
+              <a href="tel:+919999999999" class="footer-contact-link">
+                <i data-lucide="phone" style="width:16px;height:16px" aria-hidden="true"></i>
+                +91 99999 99999
+              </a>
+              <div class="footer-contact-link">
+                <i data-lucide="map-pin" style="width:16px;height:16px" aria-hidden="true"></i>
+                Bengaluru · India
+              </div>
+            </address>
+          </div><!-- end footer-brand -->
+
+          <!-- PRODUCT column -->
+          <div>
+            <div class="footer-col-title">Product</div>
+            <ul class="footer-links">
+              <li><a href="#how-it-works" class="footer-link">How it works</a></li>
+              <li><a href="#features"     class="footer-link">Features</a></li>
+              <li><a href="#"             class="footer-link">Pricing</a></li>
+              <li><a href="#"             class="footer-link">Changelog</a></li>
+            </ul>
+          </div>
+
+          <!-- BUSINESS column -->
+          <div>
+            <div class="footer-col-title">Business</div>
+            <ul class="footer-links">
+              <li><a href="#" class="footer-link">For Shopkeepers</a></li>
+              <li><a href="#" class="footer-link">For Brands</a></li>
+              <li><a href="#" class="footer-link">Enterprise</a></li>
+              <li><a href="#" class="footer-link">Partners</a></li>
+            </ul>
+          </div>
+
+          <!-- COMPANY column -->
+          <div>
+            <div class="footer-col-title">Company</div>
+            <ul class="footer-links">
+              <li><a href="#" class="footer-link">About</a></li>
+              <li><a href="#" class="footer-link">Careers</a></li>
+              <li><a href="#" class="footer-link">Press</a></li>
+              <li><a href="#" class="footer-link">Contact</a></li>
+            </ul>
+          </div>
+
+          <!-- LEGAL column -->
+          <div>
+            <div class="footer-col-title">Legal</div>
+            <ul class="footer-links">
+              <li><a href="#" class="footer-link">Privacy</a></li>
+              <li><a href="#" class="footer-link">Terms</a></li>
+              <li><a href="#" class="footer-link">Security</a></li>
+              <li><a href="#" class="footer-link">DPDP</a></li>
+            </ul>
+          </div>
+
+        </div><!-- end footer-grid -->
+
+        <!-- BOTTOM BAR: copyright text + social icons -->
+        <div class="footer-bottom">
+          <p class="footer-copy">
+            &copy; <span id="current-year">2025</span> ScanZy Technologies Pvt. Ltd. All rights reserved.
+          </p>
+          <!-- Social media icon buttons -->
+          <div class="footer-socials">
+            <!-- Twitter / X icon
+            <a href="#" class="social-btn" aria-label="ScanZy on Twitter / X">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M22 4s-.7 2.1-2 3.4c1.6 17-14.6 27.5-28 17 1.9.1 3.8-.5 5.2-1.6C5 21 1.4 18.1 1 14.5c.5.2 1 .3 1.5.3-1.6-1-2.6-2.9-2.5-4.9 1.4.8 2.9 1.2 4.4 1.2C2.1 9.1 1.7 5.7 3.2 3.5c4.2 5.2 10.5 8.4 17.2 8.7-.1-.5-.2-1-.2-1.5C20.2 7 22 4 22 4z"/>
+              </svg>
+            </a> -->
+            <!-- LinkedIn icon -->
+            <a href="#" class="social-btn" aria-label="ScanZy on LinkedIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                <rect x="2" y="9" width="4" height="12"/>
+                <circle cx="4" cy="4" r="2"/>
+              </svg>
+            </a>
+            <!-- Instagram icon -->
+            <a href="#" class="social-btn" aria-label="ScanZy on Instagram">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+            </a>
+            <!-- GitHub icon (uses fill, not stroke) -->
+            <a href="#" class="social-btn" aria-label="ScanZy on GitHub">
+              <svg viewBox="0 0 24 24" class="icon-github" aria-hidden="true">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+              </svg>
+            </a>
+          </div>
+        </div><!-- end footer-bottom -->
+
+      </div><!-- end footer-inner -->
+    </footer><!-- end footer -->
+
+  </main><!-- end main -->
+
+
+  <!-- ============================================================
+    SCRIPTS
+    Loaded at the bottom of the page (after all HTML is parsed)
+    so the JavaScript can immediately access all DOM elements.
+    The script.js file handles all interactive behavior.
+  ============================================================ -->
+  <script src="script.js"></script>
+
+</body>
+</html>

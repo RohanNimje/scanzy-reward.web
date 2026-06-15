@@ -1,0 +1,2122 @@
+/* ============================================================
+   ScanZy Rewards — style.css
+   Converted from Next.js + Tailwind CSS v4 to plain CSS.
+   Organized in sections so it is easy to find and edit.
+
+   RESPONSIVE BREAKPOINTS (matching original Next.js source exactly):
+   Mobile     : default/base — single column, centered text
+   md (≥768px): multi-column jumps for footer (6-col) and steps (3-col)
+   lg (≥1024px): hero 12-col split, features 6-col bento, CTA 2-col
+   sm (≥640px): button row switch, font size bumps, padding increases
+   ============================================================ */
+
+/* ---------- 1. CSS RESET ----------
+   Removes default browser margin/padding and ensures consistent
+   box-sizing so width/height behave predictably everywhere.     */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ---------- 2. DESIGN TOKENS (CSS Custom Properties) ----------
+   These variables define the entire color palette and spacing
+   scale. Change a value here to update the whole site.
+   Colors use OKLCH format — supported in all modern browsers.   */
+:root {
+  /* Deep near-black background with a subtle green tint */
+  --background:              oklch(0.17 0.015 155);
+  /* Near-white text for high contrast on dark background */
+  --foreground:              oklch(0.97 0.01 145);
+
+  --card:                    oklch(0.22 0.02 155);
+  --card-foreground:         oklch(0.97 0.01 145);
+
+  /* Vibrant lime-green — the ScanZy brand accent */
+  --primary:                 oklch(0.82 0.22 142);
+  /* Dark color used as text ON primary-colored buttons */
+  --primary-foreground:      oklch(0.15 0.02 150);
+
+  /* Muted green used for secondary text / labels */
+  --muted-foreground:        oklch(0.72 0.02 145);
+
+  /* Slightly brighter accent for gradient text */
+  --accent:                  oklch(0.72 0.2 145);
+
+  /* Border color — subtle green-tinted dark line */
+  --border:                  oklch(0.3 0.03 150);
+
+  /* Deep card/panel background */
+  --brand-deep:              oklch(0.22 0.04 152);
+  /* Surface background for cards/sections */
+  --brand-surface:           oklch(0.2 0.02 155);
+
+  /* Base border-radius used for cards and containers */
+  --radius: 0.85rem;
+}
+
+/* ---------- 3. BASE STYLES ----------
+   Applied to the root elements to set font, background,
+   color, and smooth rendering.                               */
+html {
+  background: var(--background);
+  /* Custom scrollbar styling for Chromium-based browsers */
+  scrollbar-width: thin;
+  scrollbar-color: oklch(0.4 0.08 152) oklch(0.17 0.015 155);
+  /* Smooth scrolling when clicking anchor links */
+  scroll-behavior: smooth;
+}
+
+body {
+  /* Geist from Google Fonts (same as Next.js project), with fallbacks */
+  font-family: 'Geist', 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+  /* Enable OpenType features for better typography */
+  font-feature-settings: "ss01", "cv11";
+  overflow-x: hidden;
+  /* Smooth font rendering on macOS/iOS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Remove default link underline; inherit color from parent */
+a { text-decoration: none; color: inherit; }
+
+/* Images fill their container and never overflow */
+img { max-width: 100%; display: block; }
+
+/* Buttons inherit font and show pointer cursor */
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+/* ---------- 4. UTILITY CLASSES ----------
+   Reusable classes that can be applied to any element.       */
+
+/* Glass morphism effect — frosted glass look for the navbar */
+.glass {
+  background: linear-gradient(
+    180deg,
+    oklch(0.28 0.03 155 / 0.55) 0%,
+    oklch(0.2 0.02 155 / 0.55) 100%
+  );
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Stronger glass for mobile navbar (always visible since mobile
+   doesn't have the "transparent at top" behavior) */
+.glass-mobile {
+  background: linear-gradient(
+    180deg,
+    oklch(0.2 0.02 155 / 0.72) 0%,
+    oklch(0.17 0.015 155 / 0.72) 100%
+  );
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-color: oklch(0.3 0.03 150 / 0.55);
+  box-shadow: 0 10px 32px -18px oklch(0.05 0 0 / 0.8);
+}
+
+/* Radial glow from the top — creates a "halo" on the hero */
+.brand-radial {
+  background-image: radial-gradient(
+    ellipse at top,
+    oklch(0.82 0.22 142 / 0.18) 0%,
+    oklch(0.17 0.015 155 / 0) 55%
+  );
+}
+
+/* Subtle grid pattern overlaid on sections */
+.brand-grid {
+  background-image:
+    linear-gradient(oklch(0.82 0.22 142 / 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.82 0.22 142 / 0.06) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Triangle/chevron pattern for CTA decorative background */
+.triangle-pattern {
+  background-image:
+    linear-gradient(135deg, oklch(0.82 0.22 142 / 0.08) 25%, transparent 25%),
+    linear-gradient(225deg, oklch(0.82 0.22 142 / 0.08) 25%, transparent 25%);
+  background-size: 24px 24px;
+}
+
+/* Scale feedback on tap/click — used on all buttons and links */
+.tap-scale {
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+.tap-scale:active { transform: scale(0.97); }
+
+/* ============================================================
+   5. ANIMATION KEYFRAMES
+   All CSS animations used across the page are defined here.
+   ============================================================ */
+
+/* Marquee: slides all chips continuously to the left.
+   The track contains items duplicated so when the first set
+   scrolls off screen, the second set takes its place seamlessly. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  /* MUST be flex so all chips lay out in ONE horizontal row.
+     flex-shrink:0 prevents the track from shrinking when its
+     content is wider than the container (which it always is). */
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.75rem;
+  padding-right: 0.75rem; /* pr-3 — matches gap so loop is seamless */
+  white-space: nowrap;    /* prevent any internal wrapping */
+  animation: marquee 40s linear infinite;
+  will-change: transform;
+}
+.marquee-track:hover { animation-play-state: paused; }
+
+/* Soft pulse: used for the glowing orb decorations.
+   Gently fades in/out and slightly scales up/down. */
+@keyframes soft-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%       { opacity: 0.85; transform: scale(1.04); }
+}
+.soft-pulse { animation: soft-pulse 5s ease-in-out infinite; }
+
+/* Float: gentle up-down bob for the hero card and CTA image */
+@keyframes float-card {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+.float-card { animation: float-card 6s ease-in-out infinite; }
+
+/* Spin wheel: continuously rotates the wheel in How It Works */
+@keyframes spin-wheel {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.spin-wheel { animation: spin-wheel 14s linear infinite; }
+
+/* Halo pulse: the glowing ring around the CTA gift box */
+@keyframes halo-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.95); }
+  50%       { opacity: 0.75; transform: scale(1.02); }
+}
+.halo-pulse { animation: halo-pulse 4.5s ease-in-out infinite; }
+
+/* ============================================================
+   6. ENTRY & SCROLL ANIMATIONS
+   These replace Framer Motion's animate/whileInView.
+   Elements start invisible; JavaScript adds .visible when they
+   enter the viewport, triggering the CSS transition.
+   ============================================================ */
+
+/* Fade up from below — used on most section cards and text blocks */
+.anim-fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.anim-fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Scale in from slightly smaller — used on the hero card */
+.anim-scale-in {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.anim-scale-in.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Slide in from bottom-left — used on the "reward unlocked" badge */
+.anim-slide-left {
+  opacity: 0;
+  transform: translateX(-20px) translateY(10px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.anim-slide-left.visible {
+  opacity: 1;
+  transform: translateX(0) translateY(0);
+}
+
+/* Slide in from top-right — used on the "scans today" badge */
+.anim-slide-right {
+  opacity: 0;
+  transform: translateX(20px) translateY(-10px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.anim-slide-right.visible {
+  opacity: 1;
+  transform: translateX(0) translateY(0);
+}
+
+/* Navbar slides down from above on page load */
+#navbar {
+  opacity: 0;
+  transform: translateY(-24px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+#navbar.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Bar chart: each bar starts at 0 height, grows to --bar-height.
+   The --bar-height variable is set per-element in JavaScript. */
+.chart-bar {
+  height: 0;
+  transition: height 0.7s ease;
+  /* transition-delay is set inline per bar for the stagger effect */
+}
+.chart-bar.visible { height: var(--bar-height, 50%); }
+
+
+/* ============================================================
+   SECTION 7: NAVBAR
+   Fixed at the top. Transparent on desktop when at top;
+   glass background after scrolling. Always glass on mobile.
+   ============================================================ */
+#navbar {
+  position: fixed;
+  inset-inline: 0; /* left: 0; right: 0; */
+  top: 0;
+  z-index: 50;
+  padding-top: 1rem;    /* py-4 when not scrolled */
+  padding-bottom: 1rem;
+  /* Transition for padding change on scroll */
+  transition: padding 0.3s ease,
+              opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Compact padding when user has scrolled */
+#navbar.scrolled {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+/* Centered container inside the navbar */
+.nav-container {
+  max-width: 80rem; /* max-w-7xl */
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+@media (min-width: 640px) { .nav-container { padding: 0 1.5rem; } }
+
+/* The pill-shaped card that contains logo + links + button */
+.nav-pill {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 1rem;      /* rounded-2xl */
+  border: 1px solid oklch(0.3 0.03 150 / 0.6);
+  padding: 0.625rem 1rem;   /* py-2.5 px-4 */
+  transition: background 0.3s ease, border-color 0.3s ease,
+              box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+/* Mobile: Always-on glass effect (always visible, no transparent phase) */
+.nav-pill {
+  background: linear-gradient(
+    180deg,
+    oklch(0.2 0.02 155 / 0.72) 0%,
+    oklch(0.17 0.015 155 / 0.72) 100%
+  );
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: 0 10px 32px -18px oklch(0.05 0 0 / 0.8);
+}
+
+/* Desktop: Transparent at top, glass only after scrolling */
+@media (min-width: 768px) {
+  .nav-pill {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-color: transparent;
+    box-shadow: none;
+  }
+  #navbar.scrolled .nav-pill {
+    background: linear-gradient(
+      180deg,
+      oklch(0.28 0.03 155 / 0.55) 0%,
+      oklch(0.2 0.02 155 / 0.55) 100%
+    );
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-color: oklch(0.3 0.03 150 / 0.6);
+    box-shadow: 0 8px 32px -12px oklch(0.05 0 0 / 0.6);
+  }
+}
+
+/* --- Logo --- */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.nav-logo-icon-wrap {
+  position: relative;
+  display: flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+/* Hover glow effect behind the icon */
+.nav-logo-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  background: oklch(0.82 0.22 142 / 0.15);
+  filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.nav-logo:hover .nav-logo-glow { opacity: 1; }
+.nav-logo img {
+  width: 2.75rem;
+  height: 2.75rem;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px oklch(0.82 0.22 142 / 0.35));
+  position: relative;
+}
+.nav-logo-text {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  line-height: 1;
+}
+.nav-logo-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--foreground);
+}
+/* Vertical divider and "Rewards" badge — only visible on sm+ */
+.nav-logo-divider {
+  display: none;
+  width: 1px;
+  height: 1rem;
+  background: oklch(0.3 0.03 150 / 0.8);
+}
+.nav-logo-badge {
+  display: none;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--primary);
+}
+@media (min-width: 640px) {
+  .nav-logo-name    { font-size: 1.35rem; }
+  .nav-logo-divider { display: inline-block; }
+  .nav-logo-badge   { display: inline; }
+}
+
+/* --- Desktop nav links (hidden on mobile) --- */
+.nav-links {
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
+}
+@media (min-width: 768px) { .nav-links { display: flex; } }
+
+.nav-link {
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.nav-link:hover {
+  background: oklch(1 0 0 / 0.05);
+  color: var(--foreground);
+}
+/* Active nav link — highlights the current section's link */
+.nav-link-active {
+  background: oklch(0.82 0.22 142 / 0.1);
+  color: var(--primary) !important;
+}
+
+/* --- Nav action buttons --- */
+.nav-actions { display: flex; align-items: center; gap: 0.5rem; }
+
+/* "Login Portal" button — only visible on desktop */
+.btn-login-desktop {
+  display: none;
+  position: relative;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--primary);
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary-foreground);
+  box-shadow:
+    0 0 0 1px oklch(0.82 0.22 142 / 0.4),
+    0 10px 30px -10px oklch(0.82 0.22 142 / 0.6);
+  transition: transform 0.2s ease;
+  align-items: center;
+  gap: 0.375rem;
+  cursor: pointer;
+}
+.btn-login-desktop:hover { transform: scale(1.02); }
+/* Shimmer effect that sweeps across on hover */
+.btn-login-desktop .btn-shine {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.3), transparent);
+  transition: transform 0.7s ease;
+  pointer-events: none;
+}
+.btn-login-desktop:hover .btn-shine { transform: translateX(100%); }
+@media (min-width: 768px) { .btn-login-desktop { display: inline-flex; } }
+
+/* Hamburger toggle button — only visible on mobile */
+.btn-hamburger {
+  border-radius: 9999px;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(1 0 0 / 0.03);
+  padding: 0.5rem;
+  color: var(--foreground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (min-width: 768px) { .btn-hamburger { display: none; } }
+
+/* --- Mobile Menu --- */
+.mobile-menu {
+  display: none; /* hidden by default; JS adds .open to show it */
+  max-width: 80rem;
+  margin: 0.5rem auto 0;
+  padding: 0 1rem;
+}
+@media (min-width: 640px) { .mobile-menu { padding: 0 1.5rem; } }
+@media (min-width: 768px) { .mobile-menu { display: none !important; } }
+.mobile-menu.open { display: block; }
+
+/* Inner glass card for the mobile menu */
+.mobile-menu-inner {
+  border-radius: 1rem;
+  border: 1px solid oklch(0.3 0.03 150 / 0.6);
+  padding: 0.75rem;
+  box-shadow: 0 16px 40px -16px oklch(0.05 0 0 / 0.7);
+  background: linear-gradient(
+    180deg,
+    oklch(0.2 0.02 155 / 0.72) 0%,
+    oklch(0.17 0.015 155 / 0.72) 100%
+  );
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+}
+
+.mobile-nav { display: flex; flex-direction: column; gap: 0.25rem; }
+
+.mobile-nav-link {
+  display: flex;
+  height: 3rem;
+  align-items: center;
+  border-radius: 0.75rem;
+  padding: 0 1rem;
+  font-size: 15px;
+  font-weight: 500;
+  color: oklch(0.97 0.01 145 / 0.9);
+  transition: background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.mobile-nav-link:hover { background: oklch(1 0 0 / 0.05); }
+.mobile-nav-link:active { background: oklch(1 0 0 / 0.1); }
+
+/* Full-width primary button in the mobile menu */
+.btn-login-mobile {
+  display: flex;
+  margin-top: 0.5rem;
+  width: 100%;
+  height: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border-radius: 9999px;
+  background: var(--primary);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--primary-foreground);
+  box-shadow:
+    0 0 0 1px oklch(0.82 0.22 142 / 0.4),
+    0 14px 36px -12px oklch(0.82 0.22 142 / 0.6);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+}
+.btn-login-mobile:active { transform: scale(0.97); }
+
+
+/* ============================================================
+   SECTION 8: LOGIN MODAL
+   Full-screen overlay that appears when "Login Portal" is clicked.
+   Contains two portal option buttons.
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: oklch(0.05 0 0 / 0.75);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  /* Starts invisible; JS adds .open to fade it in */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+/* The white box in the center of the overlay */
+.modal-box {
+  position: relative;
+  width: 100%;
+  max-width: 32rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: var(--brand-surface);
+  color: var(--foreground);
+}
+/* Green radial glow at the top of the modal box */
+.modal-glow {
+  position: absolute;
+  inset-inline: 0;
+  top: -4rem;
+  height: 10rem;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    oklch(0.82 0.22 142 / 0.25),
+    transparent 70%
+  );
+}
+.modal-header {
+  position: relative;
+  z-index: 10;
+  padding: 1.75rem 1.75rem 0;
+}
+/* Row with small icon + "ScanZy Rewards" label */
+.modal-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 1rem;
+}
+.modal-brand img {
+  width: 1.75rem;
+  height: 1.75rem;
+  object-fit: contain;
+}
+.modal-brand-label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--primary);
+}
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+.modal-desc {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--muted-foreground);
+}
+.modal-body {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.25rem 1.75rem 1.75rem;
+}
+/* X close button in the top-right corner */
+.modal-close-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  background: oklch(1 0 0 / 0.05);
+  color: var(--muted-foreground);
+  transition: background 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+}
+.modal-close-btn:hover {
+  background: oklch(1 0 0 / 0.1);
+  color: var(--foreground);
+}
+/* Each login option (Shopkeeper / Super Admin) */
+.portal-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(1 0 0 / 0.02);
+  padding: 1rem;
+  text-align: left;
+  width: 100%;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  color: var(--foreground);
+  cursor: pointer;
+}
+.portal-option:hover {
+  border-color: oklch(0.82 0.22 142 / 0.6);
+  background: oklch(1 0 0 / 0.04);
+}
+/* Square icon container */
+.portal-icon {
+  display: flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+}
+.portal-icon.default { background: var(--brand-deep); color: var(--primary); }
+.portal-icon.accent  { background: var(--primary);    color: var(--primary-foreground); }
+.portal-info { flex: 1; min-width: 0; }
+.portal-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.portal-title { font-size: 0.875rem; font-weight: 600; color: var(--foreground); }
+.portal-badge {
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: oklch(1 0 0 / 0.03);
+  padding: 0.125rem 0.5rem;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+}
+.portal-badge.accent {
+  border-color: oklch(0.82 0.22 142 / 0.4);
+  background: oklch(0.82 0.22 142 / 0.1);
+  color: var(--primary);
+}
+.portal-desc {
+  margin-top: 0.125rem;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* portal-arrow: targets both native SVG and Lucide-replaced i element */
+.portal-arrow,
+i.portal-arrow {
+  color: var(--muted-foreground);
+  flex-shrink: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.portal-option:hover .portal-arrow,
+.portal-option:hover i.portal-arrow {
+  transform: translate(2px, -2px);
+  color: var(--primary);
+}
+.modal-footer-note {
+  margin-top: 0.75rem;
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+
+
+/* ============================================================
+   SECTION 9: HERO
+   The main "above the fold" section with headline, subtext,
+   CTA buttons, trust stats, and the floating card image.
+   ============================================================ */
+#top {
+  position: relative;
+  overflow: hidden;
+  padding-top: 8rem;
+  padding-bottom: 5rem;
+}
+@media (min-width: 640px) {
+  #top { padding-top: 10rem; padding-bottom: 7rem; }
+}
+
+/* Decorative background layers (pointer-events: none so they
+   don't block clicks) */
+.hero-bg-radial {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(
+    ellipse at top,
+    oklch(0.82 0.22 142 / 0.18) 0%,
+    oklch(0.17 0.015 155 / 0) 55%
+  );
+}
+.hero-bg-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(oklch(0.82 0.22 142 / 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.82 0.22 142 / 0.06) 1px, transparent 1px);
+  background-size: 56px 56px;
+  opacity: 0.6;
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+}
+/* Soft glowing orbs in the background */
+.hero-orb {
+  position: absolute;
+  border-radius: 9999px;
+  background: oklch(0.82 0.22 142 / 0.1);
+  filter: blur(3rem);
+  pointer-events: none;
+}
+.hero-orb-left  { left: -8rem; top: 33%; width: 20rem; height: 20rem; animation: soft-pulse 5s ease-in-out infinite; }
+/* On mobile, pull the right orb inside the viewport so it doesn't escape overflow:hidden */
+.hero-orb-right { right: -4rem; top: 2.5rem; width: 18rem; height: 18rem; animation: soft-pulse 5s ease-in-out infinite; animation-delay: 2s; }
+@media (min-width: 768px) {
+  .hero-orb-right { right: -10rem; width: 24rem; height: 24rem; }
+}
+
+/* Two-column grid: text (7 cols) + card image (5 cols) on lg desktop.
+   Original: mx-auto max-w-7xl grid grid-cols-1 items-center gap-10 px-6
+             sm:gap-12 sm:px-6 lg:grid-cols-12 lg:gap-8 */
+.hero-inner {
+  position: relative;
+  max-width: 80rem;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 2.5rem;
+  /* Use clamp() so padding never goes too wide on tiny screens */
+  padding: 0 clamp(1rem, 4vw, 1.5rem);
+  /* Contain any absolute children (orbs) within this box */
+  width: 100%;
+  box-sizing: border-box;
+}
+@media (min-width: 640px) { .hero-inner { gap: 3rem; padding: 0 1.5rem; } }
+/* md: show card column below text (single column but card is visible and well-sized) */
+@media (min-width: 768px) {
+  .hero-inner { padding: 0 2rem; }
+}
+/* lg: switch to 12-column grid; text takes 7, card takes 5 */
+@media (min-width: 1024px) {
+  .hero-inner { grid-template-columns: 7fr 5fr; gap: 2rem; padding: 0 2rem; }
+}
+
+/* Text column: center on mobile/tablet, left-align on lg desktop.
+   Original: text-center lg:col-span-7 lg:text-left */
+.hero-text {
+  text-align: center;
+  /* Prevent text from overflowing on tiny screens */
+  width: 100%;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+@media (min-width: 1024px) { .hero-text { text-align: left; } }
+
+/* Small pill badge above the headline */
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid oklch(0.82 0.22 142 / 0.3);
+  background: oklch(0.82 0.22 142 / 0.1);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--primary);
+}
+
+/* Main headline */
+.hero-h1 {
+  margin-top: 1.25rem;
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--foreground);
+  text-wrap: balance;
+}
+@media (min-width: 640px)  { .hero-h1 { font-size: 3rem; } }
+@media (min-width: 1024px) { .hero-h1 { font-size: 3.75rem; } }
+
+/* "Retail Engagement" — gradient colored + underline glow */
+.hero-h1-gradient {
+  position: relative;
+  display: inline-block;
+}
+.hero-h1-gradient span {
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.hero-h1-underline {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 4px;
+  z-index: 0;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: oklch(0.82 0.22 142 / 0.2);
+  filter: blur(8px);
+}
+
+/* Subheading paragraph.
+   Original: mx-auto mt-5 max-w-xl text-pretty text-base leading-relaxed
+             text-muted-foreground sm:text-lg lg:mx-0 */
+.hero-subtext {
+  margin: 1.25rem auto 0;
+  max-width: 36rem;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--muted-foreground);
+  text-wrap: pretty;
+}
+@media (min-width: 640px) { .hero-subtext { font-size: 1.125rem; } }
+/* Only remove auto margin (left-align) at lg — matches original lg:mx-0 */
+@media (min-width: 1024px) { .hero-subtext { margin-left: 0; } }
+
+/* CTA button row */
+.hero-ctas {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+}
+@media (min-width: 640px) {
+  .hero-ctas { flex-direction: row; align-items: center; }
+}
+
+/* PRIMARY button — filled lime-green with shimmer */
+.btn-primary {
+  position: relative;
+  display: inline-flex;
+  height: 3.5rem;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--primary);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--primary-foreground);
+  box-shadow:
+    0 0 0 1px oklch(0.82 0.22 142 / 0.4),
+    0 16px 40px -12px oklch(0.82 0.22 142 / 0.55);
+  transition: transform 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+}
+.btn-primary:hover { transform: scale(1.02); }
+.btn-primary:active { transform: scale(0.97); }
+.btn-primary .btn-shine {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.3), transparent);
+  transition: transform 0.7s ease;
+  pointer-events: none;
+}
+.btn-primary:hover .btn-shine { transform: translateX(100%); }
+.btn-primary > span { position: relative; z-index: 10; }
+/* Target both SVG elements and Lucide <i> icon wrappers inside btn-primary */
+.btn-primary > svg,
+.btn-primary > i  { position: relative; z-index: 10; transition: transform 0.2s ease; flex-shrink: 0; }
+.btn-primary:hover > svg,
+.btn-primary:hover > i  { transform: translateX(2px); }
+@media (min-width: 640px) {
+  .btn-primary { width: auto; height: auto; padding: 0.875rem 1.5rem; font-size: 0.875rem; }
+}
+
+/* SECONDARY button — outlined, glass-like */
+.btn-secondary {
+  display: inline-flex;
+  height: 3.5rem;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(1 0 0 / 0.03);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--foreground);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+}
+.btn-secondary:hover {
+  border-color: oklch(0.82 0.22 142 / 0.5);
+  background: oklch(1 0 0 / 0.06);
+}
+.btn-secondary:active { transform: scale(0.97); }
+@media (min-width: 640px) {
+  .btn-secondary { width: auto; height: auto; padding: 0.875rem 1.5rem; font-size: 0.875rem; }
+}
+
+/* Trust stat numbers below the CTA buttons.
+   Original: mx-auto mt-12 grid max-w-xl grid-cols-3 gap-6
+             border-t border-border/60 pt-6 lg:mx-0 */
+.hero-stats {
+  margin: 3rem auto 0;
+  max-width: 36rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  border-top: 1px solid oklch(0.3 0.03 150 / 0.6);
+  padding-top: 1.5rem;
+}
+/* Remove auto centering only at lg, matching original lg:mx-0 */
+@media (min-width: 1024px) { .hero-stats { margin-left: 0; } }
+/* Stat text: center on mobile, left-align only at lg */
+.hero-stat { text-align: center; }
+@media (min-width: 1024px) { .hero-stat { text-align: left; } }
+.hero-stat-key {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--foreground);
+}
+.hero-stat-val {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+/* Card image column.
+   Original: relative lg:col-span-5 (the column assignment is done via
+   the parent grid at lg, so no extra styles needed here) */
+.hero-card-col {
+  position: relative;
+  /* Ensure column fills its grid cell and card can grow */
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-mockup-wrap {
+  position: relative;
+  margin: 0 auto;
+  width: 100%;
+  /* Mobile: a comfortable size */
+  max-width: 22rem;
+}
+/* Tablet: make the card larger and more prominent */
+@media (min-width: 640px) {
+  .card-mockup-wrap { max-width: 28rem; }
+}
+/* Large tablet — let the card fill the column fully */
+@media (min-width: 768px) {
+  .card-mockup-wrap { max-width: 34rem; }
+}
+/* Desktop: let it fill the 5fr column naturally */
+@media (min-width: 1024px) {
+  .card-mockup-wrap { max-width: 100%; }
+}
+/* Ambient glow blob behind the card */
+.card-mockup-glow {
+  position: absolute;
+  inset: -2.5rem;
+  border-radius: 3rem;
+  background: radial-gradient(
+    ellipse at center,
+    oklch(0.82 0.22 142 / 0.28),
+    transparent 65%
+  );
+  filter: blur(1.5rem);
+  pointer-events: none;
+}
+/* The card image itself — square, rounded, floating */
+.card-mockup-img-wrap {
+  position: relative;
+  width: 100%;
+  /* Mobile: constrained for small screens */
+  max-width: 20rem;
+  margin: 0 auto;
+  border-radius: 1.5rem;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  overflow: hidden;
+  box-shadow:
+    0 30px 80px -20px oklch(0.05 0 0 / 0.8),
+    0 0 0 1px oklch(0.82 0.22 142 / 0.12),
+    inset 0 1px 0 oklch(1 0 0 / 0.08);
+  aspect-ratio: 1;
+  animation: float-card 6s ease-in-out infinite;
+}
+@media (min-width: 640px) {
+  /* sm: allow up to 26rem */
+  .card-mockup-img-wrap { max-width: 26rem; }
+}
+@media (min-width: 768px) {
+  /* md/tablet: allow full width of wrap so it's big and prominent */
+  .card-mockup-img-wrap { max-width: 100%; }
+}
+.card-mockup-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Floating stat badges overlaid on the card */
+.hero-badge {
+  position: absolute;
+  display: none; /* Only shown on sm+ */
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 1rem;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(0.2 0.02 155 / 0.9);
+  padding: 0.75rem;
+  box-shadow: 0 20px 40px -12px oklch(0 0 0 / 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  /* Prevent badges from creating horizontal overflow */
+  z-index: 5;
+}
+@media (min-width: 640px) { .hero-badge { display: flex; } }
+/* Position badges relative to the card-mockup-wrap */
+.hero-badge-left  { left: -0.75rem; top: 2rem; }
+.hero-badge-right { right: -0.75rem; bottom: 2rem; }
+/* On smaller viewports keep badges clamped so they don't overflow */
+@media (max-width: 767px) {
+  .hero-badge-left  { left: 0.5rem; }
+  .hero-badge-right { right: 0.5rem; }
+}
+/* Desktop: allow the classic offset beyond the card edges */
+@media (min-width: 1024px) {
+  .hero-badge-left  { left: -1rem; top: 2.5rem; }
+  .hero-badge-right { right: -0.5rem; bottom: 2.5rem; }
+}
+
+.badge-icon {
+  display: flex;
+  width: 2.25rem; height: 2.25rem;
+  align-items: center; justify-content: center;
+  border-radius: 0.75rem;
+  background: oklch(0.82 0.22 142 / 0.15);
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.badge-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+}
+.badge-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-top: 0.125rem;
+  white-space: nowrap;
+}
+/* Pulsing green dot (live indicator) */
+.badge-dot {
+  display: inline-block;
+  width: 0.5rem; height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--primary);
+  box-shadow: 0 0 10px 2px oklch(0.82 0.22 142 / 0.6);
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   SECTION 10: MARQUEE (feature highlights strip)
+   An infinite scrolling strip of feature chips.
+   Edge fades give it the appearance of scrolling into infinity.
+   ============================================================ */
+#marquee {
+  position: relative;
+  border-top: 1px solid oklch(0.3 0.03 150 / 0.6);
+  border-bottom: 1px solid oklch(0.3 0.03 150 / 0.6);
+  background: oklch(0.2 0.02 155 / 0.4);
+  padding: 1.5rem 0;
+  overflow: hidden;
+}
+/* Left and right edge gradient fades */
+.marquee-fade-left {
+  position: absolute; inset-block: 0; left: 0;
+  z-index: 10; width: 6rem;
+  background: linear-gradient(to right, var(--background), transparent);
+  pointer-events: none;
+}
+.marquee-fade-right {
+  position: absolute; inset-block: 0; right: 0;
+  z-index: 10; width: 6rem;
+  background: linear-gradient(to left, var(--background), transparent);
+  pointer-events: none;
+}
+
+/* Individual chip pill */
+.marquee-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: 9999px;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(1 0 0 / 0.03);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: oklch(0.97 0.01 145 / 0.9);
+  white-space: nowrap;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+.marquee-chip:hover {
+  border-color: oklch(0.82 0.22 142 / 0.5);
+  color: var(--foreground);
+}
+/* Round icon holder inside each chip */
+.chip-icon {
+  display: flex;
+  width: 1.5rem; height: 1.5rem;
+  align-items: center; justify-content: center;
+  border-radius: 9999px;
+  background: oklch(0.82 0.22 142 / 0.15);
+  color: var(--primary);
+  flex-shrink: 0;
+}
+/* Tiny dot at the end of each chip */
+.chip-dot {
+  width: 0.25rem; height: 0.25rem;
+  border-radius: 9999px;
+  background: oklch(0.82 0.22 142 / 0.6);
+}
+
+
+/* ============================================================
+   SECTION 11: SHARED SECTION HELPERS
+   Used by both "How It Works" and "Features"
+   ============================================================ */
+
+/* The subtle grid overlay used on How It Works / Features backgrounds */
+.section-bg-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(oklch(0.82 0.22 142 / 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.82 0.22 142 / 0.06) 1px, transparent 1px);
+  background-size: 56px 56px;
+  opacity: 0.4;
+  -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
+}
+
+/* Max-width centered wrapper inside a section */
+.section-inner {
+  position: relative;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Section header: eyebrow pill + title + subtitle */
+.section-header { max-width: 42rem; margin: 0 auto; text-align: center; }
+
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid oklch(0.82 0.22 142 / 0.3);
+  background: oklch(0.82 0.22 142 / 0.1);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--primary);
+}
+.section-title {
+  margin-top: 1rem;
+  font-size: 1.875rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--foreground);
+  text-wrap: balance;
+}
+@media (min-width: 640px) { .section-title { font-size: 2.25rem; } }
+.section-subtitle {
+  margin-top: 1rem;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--muted-foreground);
+  text-wrap: pretty;
+}
+
+
+/* ============================================================
+   SECTION 12: HOW IT WORKS
+   Three step cards in a responsive grid.
+   Original: grid-cols-1 → md:grid-cols-3 (jumps directly at 768px,
+   no intermediate tablet variant — matches the original source exactly)
+   ============================================================ */
+#how-it-works {
+  position: relative;
+  padding: 6rem 0;
+}
+@media (min-width: 640px) { #how-it-works { padding: 8rem 0; } }
+
+/* ============================================================
+   MOBILE CAROUSEL (<768px) — Embla-equivalent architecture
+
+   The original how-it-works.tsx uses a plain grid with no carousel.
+   On mobile we wrap the steps in a carousel viewport that mirrors
+   Embla's container → track → slide structure:
+
+     .steps-carousel-viewport  (overflow: hidden, the "window")
+       .steps-grid             (display: flex, the "track")
+         .step-card            (flex: 0 0 100%, the "slide")
+
+   At md+ (768px) the viewport becomes transparent and the grid
+   layout takes over exactly as in the original source.
+   ============================================================ */
+
+/* --- Carousel viewport (overflow mask) --- */
+.steps-carousel-viewport {
+  overflow: hidden;
+  width: 100%;
+}
+/* Only reveal overflow at md+, where grid kicks in */
+@media (min-width: 768px) {
+  .steps-carousel-viewport { overflow: visible; }
+}
+
+/* --- The scrollable track (flex row on mobile, grid on md+) --- */
+.steps-grid {
+  /* Mobile: flex row for carousel */
+  display: flex;
+  flex-direction: row;
+  /* Smooth Embla-style physics: cubic-bezier matches [0.22, 1, 0.36, 1] easing */
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  list-style: none;
+  padding: 0;
+  /* No margin-top here — set on viewport wrapper */
+  margin: 0;
+  gap: 0;
+}
+@media (min-width: 768px) {
+  /* md+: disable carousel flex, switch to 3-column grid.
+     Original className: grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-6 */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    transform: none !important; /* clear any JS-applied translateX */
+    transition: none;
+  }
+}
+
+/* --- Each slide: full viewport width on mobile --- */
+.step-card {
+  /* Mobile carousel: each card fills 100% of the viewport */
+  flex: 0 0 100%;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(0.2 0.02 155 / 0.7);
+  padding: 1.5rem;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+@media (min-width: 768px) {
+  /* md+: reset carousel sizing, let grid control dimensions */
+  .step-card { flex: unset; min-width: unset; }
+}
+.step-card:hover { border-color: oklch(0.82 0.22 142 / 0.4); }
+
+/* --- Numbered carousel indicators (visible only on mobile) ---
+   These are NUMBERS (1, 2, 3), not dots — exactly as the user requested.
+   JS injects them into #steps-indicators below the viewport.          */
+.steps-indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+/* Hide indicators on md+ since the grid shows all cards */
+@media (min-width: 768px) { .steps-indicators { display: none; } }
+
+.steps-indicator {
+  /* Number indicator pill */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem; height: 2rem;
+  border-radius: 9999px;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(1 0 0 / 0.03);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
+  font-family: inherit;
+  line-height: 1;
+}
+.steps-indicator.active {
+  border-color: var(--primary);
+  background: oklch(0.82 0.22 142 / 0.15);
+  color: var(--primary);
+}
+/* Glow that appears on hover (top-right corner) */
+.step-card-glow {
+  position: absolute; right: -5rem; top: -5rem;
+  width: 12rem; height: 12rem;
+  border-radius: 9999px;
+  background: oklch(0.82 0.22 142 / 0.1);
+  filter: blur(3rem);
+  opacity: 0; transition: opacity 0.5s ease; pointer-events: none;
+}
+.step-card:hover .step-card-glow { opacity: 1; }
+
+/* Row with "STEP 01" label + icon */
+.step-header { display: flex; align-items: center; justify-content: space-between; }
+.step-label {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(1 0 0 / 0.03);
+  padding: 0.25rem 0.625rem;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--primary);
+}
+.step-icon {
+  display: flex;
+  width: 2.25rem; height: 2.25rem;
+  align-items: center; justify-content: center;
+  border-radius: 0.75rem;
+  background: oklch(0.82 0.22 142 / 0.15);
+  color: var(--primary);
+}
+/* Visual illustration area (4:3 aspect ratio) */
+.step-visual {
+  margin-top: 1.25rem;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(0.22 0.04 152 / 0.6);
+}
+.step-title {
+  margin-top: 1.25rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--foreground);
+}
+.step-desc {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.625;
+  color: var(--muted-foreground);
+}
+/* "Learn more →" link at the bottom of each step */
+.step-more {
+  margin-top: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--primary);
+}
+/* Arrow icon inside "Learn more" — slides right on step card hover.
+   Must target both svg (native) and i (Lucide CDN replace-in-place) */
+.step-more svg,
+.step-more i { transition: transform 0.2s ease; }
+.step-card:hover .step-more svg,
+.step-card:hover .step-more i { transform: translateX(4px); }
+
+/* ---- Step Visuals ---- */
+
+/* STEP 1: Standee with fake QR code */
+.standee-visual {
+  position: relative;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 1rem;
+}
+.standee-bg-pattern {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(135deg, oklch(0.82 0.22 142 / 0.08) 25%, transparent 25%),
+    linear-gradient(225deg, oklch(0.82 0.22 142 / 0.08) 25%, transparent 25%);
+  background-size: 24px 24px;
+  opacity: 0.6;
+}
+.standee-wave {
+  position: absolute; inset: 0;
+}
+.qr-wrapper {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.qr-box {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  box-shadow: 0 8px 24px oklch(0 0 0 / 0.3);
+}
+/* 8×8 grid for the fake QR pixels */
+.qr-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+}
+.qr-cell { width: 8px; height: 8px; border-radius: 2px; }
+.qr-cell.on  { background: oklch(0.17 0.015 155); }
+.qr-cell.off { background: white; }
+.standee-label {
+  margin-top: 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(1 0 0 / 0.06);
+  padding: 0.25rem 0.75rem;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--primary);
+  backdrop-filter: blur(4px);
+}
+
+/* STEP 2: Spinning prize wheel */
+.spin-visual {
+  position: relative;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.spin-wheel-wrap {
+  position: relative;
+  width: 10rem; height: 10rem;
+}
+/* Downward-pointing triangle pointer above the wheel */
+.spin-pointer {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(50% - 5rem - 4px);
+  width: 0; height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 14px solid var(--primary);
+  filter: drop-shadow(0 0 10px oklch(0.82 0.22 142 / 0.8));
+  z-index: 10;
+}
+.spin-label {
+  position: absolute;
+  bottom: 0.75rem; left: 50%;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(1 0 0 / 0.05);
+  padding: 0.25rem 0.75rem;
+  font-size: 10px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.2em;
+  color: var(--primary);
+  backdrop-filter: blur(4px);
+  white-space: nowrap;
+}
+
+/* STEP 3: PIN verification mini admin UI */
+.pin-visual {
+  position: relative;
+  display: flex;
+  height: 100%; width: 100%;
+  align-items: center; justify-content: center;
+  padding: 1.25rem;
+}
+.pin-card {
+  width: 100%; max-width: 15rem;
+  border-radius: 0.75rem;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: var(--brand-surface);
+  padding: 1rem;
+  box-shadow: 0 20px 40px oklch(0 0 0 / 0.4);
+}
+.pin-card-header { display: flex; align-items: center; justify-content: space-between; }
+.pin-card-title-row { display: flex; align-items: center; gap: 0.5rem; }
+.pin-status-dot {
+  width: 0.5rem; height: 0.5rem; border-radius: 9999px;
+  background: var(--primary);
+  box-shadow: 0 0 8px oklch(0.82 0.22 142 / 0.7);
+}
+.pin-card-title { font-size: 11px; font-weight: 500; color: var(--foreground); }
+.pin-live-badge {
+  border-radius: 9999px; background: oklch(0.82 0.22 142 / 0.15);
+  padding: 0.125rem 0.5rem; font-size: 9px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary);
+}
+.pin-label-text {
+  margin-top: 0.75rem; font-size: 10px;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+}
+.pin-inputs { margin-top: 0.5rem; display: flex; gap: 0.375rem; }
+.pin-input {
+  flex: 1; height: 2.25rem;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border);
+  background: var(--brand-deep);
+  font-size: 0.875rem; font-weight: 600; color: var(--primary);
+}
+.pin-success {
+  margin-top: 0.75rem;
+  display: flex; align-items: center;
+  border-radius: 0.375rem;
+  background: oklch(0.82 0.22 142 / 0.1);
+  padding: 0.5rem 0.625rem;
+}
+.pin-success-text {
+  display: flex; align-items: center; gap: 0.375rem;
+  font-size: 10px; font-weight: 500; color: var(--primary);
+}
+
+
+/* ============================================================
+   SECTION 13: FEATURES
+   Bento-style grid of 4 feature cards.
+   Wide cards span more columns on desktop.
+   ============================================================ */
+#features { position: relative; padding: 6rem 0; }
+@media (min-width: 640px) { #features { padding: 8rem 0; } }
+
+/* Top horizontal line that separates hero from features */
+.features-top-line {
+  position: absolute; inset-inline: 0; top: 0; height: 1px;
+  background: linear-gradient(to right, transparent, oklch(0.82 0.22 142 / 0.3), transparent);
+}
+
+/* Responsive bento grid:
+   Mobile (<1024px) : 1 column
+   Desktop (≥1024px): 6-col bento with span variants */
+.features-grid {
+  margin-top: 3.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+/* Desktop: original 6-column bento */
+@media (min-width: 1024px) {
+  .features-grid { grid-template-columns: repeat(6, 1fr); gap: 1.5rem; }
+  /* "Data Insights" card: takes 4 out of 6 columns */
+  .feature-card-wide   { grid-column: span 4; }
+  /* "Revenue" card: takes 2 out of 6 columns */
+  .feature-card-narrow { grid-column: span 2; }
+  /* "Sponsor Ads" and "Privacy" cards: 3 out of 6 each (side by side) */
+  .feature-card-half   { grid-column: span 3; }
+}
+
+/* Feature card base styles */
+.feature-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(0.2 0.02 155 / 0.7);
+  padding: 1.5rem;
+  transition: border-color 0.3s ease;
+}
+.feature-card:hover { border-color: oklch(0.82 0.22 142 / 0.4); }
+.feature-card-glow {
+  position: absolute; right: -5rem; top: -5rem;
+  width: 12rem; height: 12rem;
+  border-radius: 9999px;
+  background: oklch(0.82 0.22 142 / 0.1);
+  filter: blur(3rem);
+  opacity: 0; transition: opacity 0.5s ease; pointer-events: none;
+}
+.feature-card:hover .feature-card-glow { opacity: 1; }
+
+.feature-card-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.feature-icon {
+  display: flex;
+  width: 2.5rem; height: 2.5rem;
+  align-items: center; justify-content: center;
+  border-radius: 0.75rem;
+  background: oklch(0.82 0.22 142 / 0.15);
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.feature-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--foreground);
+}
+.feature-desc {
+  position: relative;
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.625;
+  color: var(--muted-foreground);
+}
+/* Inner box that contains the visual illustration */
+.feature-visual {
+  position: relative;
+  margin-top: 1.25rem;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(0.22 0.04 152 / 0.6);
+  padding: 1rem;
+}
+
+/* ---- Insights Visual (bar chart) ---- */
+.insights-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
+.insights-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted-foreground); }
+.insights-value-row { margin-top: 2px; display: flex; align-items: baseline; gap: 0.5rem; }
+.insights-value { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.025em; color: var(--foreground); }
+.insights-badge {
+  border-radius: 9999px; background: oklch(0.82 0.22 142 / 0.15);
+  padding: 0.125rem 0.5rem; font-size: 10px; font-weight: 600; color: var(--primary);
+}
+.insights-legend { display: none; align-items: center; gap: 0.5rem; }
+@media (min-width: 640px) { .insights-legend { display: flex; } }
+.legend-item { display: inline-flex; align-items: center; gap: 0.375rem; font-size: 10px; color: var(--muted-foreground); }
+.legend-dot { width: 0.5rem; height: 0.5rem; border-radius: 9999px; }
+
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 80px;
+  margin-top: 0.75rem;
+}
+.chart-bar {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(to top, oklch(0.82 0.22 142 / 0.2), var(--primary));
+  box-shadow: inset 0 -8px 20px oklch(0.82 0.22 142 / 0.4);
+  min-height: 4px;
+}
+.chart-bar-inner {
+  position: absolute; inset-inline: 0; bottom: 0;
+  height: 30%; background: oklch(0.82 0.22 142 / 0.4);
+}
+.bar-x-labels {
+  margin-top: 0.5rem;
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: var(--muted-foreground);
+}
+
+/* ---- Revenue Visual (line chart) ---- */
+.revenue-visual { display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+.revenue-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted-foreground); }
+.revenue-value-row { margin-top: 0.25rem; display: flex; align-items: baseline; gap: 0.25rem; }
+.revenue-value { font-size: 1.875rem; font-weight: 600; letter-spacing: -0.025em; color: var(--foreground); }
+.revenue-x-labels {
+  margin-top: 0.5rem; display: flex; justify-content: space-between;
+  font-size: 10px; color: var(--muted-foreground);
+}
+
+/* ---- Sponsor Ads Visual ---- */
+.sponsor-visual { display: flex; flex-direction: column; gap: 0.5rem; height: 100%; }
+.sponsor-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem; }
+.sponsor-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted-foreground); }
+.sponsor-active-badge {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  border-radius: 9999px; background: oklch(0.82 0.22 142 / 0.15);
+  padding: 0.125rem 0.5rem; font-size: 10px; font-weight: 600; color: var(--primary);
+}
+.sponsor-row {
+  display: flex; align-items: center; justify-content: space-between;
+  border-radius: 0.5rem; border: 1px solid oklch(0.3 0.03 150 / 0.6);
+  background: oklch(1 0 0 / 0.03); padding: 0.5rem 0.75rem;
+}
+.sponsor-brand-info { display: flex; align-items: center; gap: 0.5rem; }
+.sponsor-avatar {
+  display: flex; width: 1.75rem; height: 1.75rem;
+  align-items: center; justify-content: center;
+  border-radius: 0.375rem;
+  background: oklch(0.82 0.22 142 / 0.15);
+  font-size: 0.75rem; font-weight: 700; color: var(--primary);
+}
+.sponsor-name { font-size: 0.75rem; font-weight: 600; color: var(--foreground); }
+.sponsor-tag { font-size: 10px; color: var(--muted-foreground); }
+.sponsor-right { display: flex; align-items: center; gap: 0.75rem; }
+.sponsor-cpc { font-family: monospace; font-size: 10px; color: var(--muted-foreground); }
+
+/* ---- Privacy Visual ---- */
+.privacy-visual { display: flex; flex-direction: column; justify-content: space-between; gap: 0.75rem; height: 100%; }
+.privacy-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+.privacy-stat {
+  border-radius: 0.5rem;
+  border: 1px solid oklch(0.3 0.03 150 / 0.6);
+  background: oklch(1 0 0 / 0.03);
+  padding: 0.625rem;
+}
+.privacy-stat.highlight {
+  border-color: oklch(0.82 0.22 142 / 0.4);
+  background: oklch(0.82 0.22 142 / 0.1);
+}
+.privacy-stat-label {
+  display: flex; align-items: center; gap: 0.25rem;
+  font-size: 10px; color: var(--muted-foreground);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.privacy-stat.highlight .privacy-stat-label { color: var(--primary); }
+.privacy-stat-value { margin-top: 2px; font-size: 0.875rem; font-weight: 600; color: var(--foreground); }
+.privacy-stat.highlight .privacy-stat-value { color: var(--primary); }
+.privacy-residency {
+  border-radius: 0.5rem;
+  border: 1px solid oklch(0.3 0.03 150 / 0.6);
+  background: oklch(1 0 0 / 0.03); padding: 0.75rem;
+}
+.privacy-residency-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted-foreground); }
+.privacy-residency-value {
+  margin-top: 0.25rem; display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.75rem; font-weight: 500; color: var(--foreground);
+}
+.residency-dot { width: 0.375rem; height: 0.375rem; border-radius: 9999px; background: var(--primary); }
+
+
+/* ============================================================
+   SECTION 14: CTA (Partner Call to Action)
+   Full-width box with left text + right gift box image.
+   ============================================================ */
+#partner { position: relative; padding: 5rem 0; }
+@media (min-width: 640px) { #partner { padding: 7rem 0; } }
+
+.cta-inner { max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; }
+
+/* The big rounded card */
+.cta-box {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(0.2 0.02 155 / 0.8);
+  padding: 1.5rem;
+}
+@media (min-width: 640px) { .cta-box { padding: 3.5rem; } }
+
+/* Background decorations */
+.cta-glow {
+  position: absolute; inset: -8rem; pointer-events: none;
+  background: radial-gradient(ellipse at center, oklch(0.82 0.22 142 / 0.18), transparent 60%);
+}
+.cta-pattern {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0.4;
+  background-image:
+    linear-gradient(135deg, oklch(0.82 0.22 142 / 0.08) 25%, transparent 25%),
+    linear-gradient(225deg, oklch(0.82 0.22 142 / 0.08) 25%, transparent 25%);
+  background-size: 24px 24px;
+}
+
+/* Two-column grid.
+   Single column on mobile, 2 equal columns only at lg (1024px+) */
+.cta-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 2.5rem;
+}
+/* Only at lg switch to 2-col side-by-side */
+@media (min-width: 1024px) { .cta-grid { grid-template-columns: 1fr 1fr; } }
+
+/* CTA text: center on mobile, left-align at lg. */
+.cta-text { text-align: center; }
+@media (min-width: 1024px) { .cta-text { text-align: left; } }
+
+.cta-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid oklch(0.82 0.22 142 / 0.3);
+  background: oklch(0.82 0.22 142 / 0.1);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.18em;
+  color: var(--primary);
+}
+.cta-title {
+  margin-top: 1rem;
+  font-size: 1.875rem; font-weight: 600;
+  letter-spacing: -0.025em; color: var(--foreground);
+  text-wrap: balance;
+}
+@media (min-width: 640px) { .cta-title { font-size: 2.25rem; } }
+.cta-desc {
+  margin: 0.75rem auto 0; max-width: 32rem;
+  font-size: 1rem; line-height: 1.75;
+  color: var(--muted-foreground); text-wrap: pretty;
+}
+@media (min-width: 1024px) { .cta-desc { margin-left: 0; } }
+.cta-btns {
+  margin-top: 1.75rem;
+  display: flex; flex-direction: column; align-items: stretch; gap: 0.75rem;
+}
+@media (min-width: 640px) { .cta-btns { flex-direction: row; align-items: center; } }
+
+/* Right side: gift box image with glows */
+.cta-image-col {
+  position: relative;
+  margin: 0 auto;
+  width: 100%; max-width: 28rem;
+  aspect-ratio: 1;
+}
+.cta-ambient-glow {
+  position: absolute; inset: -2.5rem; border-radius: 3rem; pointer-events: none;
+  background: radial-gradient(ellipse at center, oklch(0.82 0.22 142 / 0.32), transparent 65%);
+  filter: blur(1.5rem);
+}
+.cta-halo {
+  position: absolute; inset: 1rem; border-radius: 9999px;
+  background: radial-gradient(ellipse at center, oklch(0.82 0.22 142 / 0.35), transparent 60%);
+  filter: blur(1.5rem);
+  animation: halo-pulse 4.5s ease-in-out infinite;
+}
+.cta-img-wrap {
+  position: relative; width: 100%; height: 100%;
+  animation: float-card 6s ease-in-out infinite;
+}
+.cta-img-wrap img {
+  width: 100%; height: 100%; object-fit: contain;
+  filter: drop-shadow(0 30px 60px oklch(0.05 0 0 / 0.85));
+}
+
+/* Floating info chips overlaid on the gift box */
+.cta-chip {
+  position: absolute;
+  display: none; /* Only shown on sm+ */
+  align-items: center; gap: 0.625rem;
+  border-radius: 1rem;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(0.2 0.02 155 / 0.9);
+  padding: 0.625rem 0.75rem;
+  box-shadow: 0 20px 40px -12px oklch(0 0 0 / 0.5);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+@media (min-width: 640px) { .cta-chip { display: flex; } }
+.cta-chip-bottom-left { bottom: 2rem; left: 0; }
+.cta-chip-top-right   { top: 1.5rem; right: 0; }
+.cta-chip-icon {
+  display: flex; width: 2rem; height: 2rem;
+  align-items: center; justify-content: center;
+  border-radius: 0.5rem;
+  background: oklch(0.82 0.22 142 / 0.15); color: var(--primary);
+}
+.cta-chip-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted-foreground); }
+.cta-chip-value { font-size: 0.875rem; font-weight: 600; color: var(--foreground); margin-top: 2px; }
+
+
+/* ============================================================
+   SECTION 15: FOOTER
+   4-column link grid + brand column + social icons.
+   ============================================================ */
+footer {
+  position: relative;
+  border-top: 1px solid oklch(0.3 0.03 150 / 0.6);
+  background: oklch(0.2 0.02 155 / 0.5);
+}
+.footer-top-line {
+  position: absolute; inset-inline: 0; top: 0; height: 1px;
+  background: linear-gradient(to right, transparent, oklch(0.82 0.22 142 / 0.4), transparent);
+}
+.footer-inner {
+  max-width: 80rem; margin: 0 auto;
+  padding: 4rem 1rem;
+}
+@media (min-width: 640px) { .footer-inner { padding: 4rem 1.5rem; } }
+
+/* Footer grid:
+   Mobile (<768px)  : 2-column grid (brand spans both)
+   Tablet+ (≥768px) : 6-column grid (brand spans 2) */
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+@media (min-width: 768px) {
+  .footer-grid { grid-template-columns: repeat(6, 1fr); gap: 1.5rem; }
+}
+
+/* Brand column spans both columns on mobile */
+.footer-brand { grid-column: span 2; }
+@media (min-width: 768px) { .footer-brand { grid-column: span 2; } }
+
+.footer-brand-row { display: flex; align-items: center; gap: 0.625rem; }
+.footer-logo-wrap { width: 2.5rem; height: 2.5rem; flex-shrink: 0; }
+.footer-logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
+.footer-brand-info { display: flex; flex-direction: column; line-height: 1; }
+.footer-brand-name { font-size: 1.125rem; font-weight: 600; letter-spacing: -0.025em; color: var(--foreground); }
+.footer-brand-sub { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.18em; color: var(--primary); }
+.footer-tagline {
+  margin-top: 1rem; max-width: 22rem;
+  font-size: 0.875rem; line-height: 1.625; color: var(--muted-foreground);
+}
+.footer-contact { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.footer-contact-link {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.875rem; color: var(--muted-foreground);
+  transition: color 0.2s ease;
+}
+.footer-contact-link:hover { color: var(--foreground); }
+/* footer-contact-link: icon color — targets both SVG and Lucide i */
+.footer-contact-link svg,
+.footer-contact-link i { color: var(--primary); flex-shrink: 0; }
+
+.footer-col-title {
+  font-size: 0.75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.18em; color: var(--primary);
+}
+.footer-links { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.625rem; list-style: none; padding: 0; }
+.footer-link { font-size: 0.875rem; color: var(--muted-foreground); transition: color 0.2s ease; }
+.footer-link:hover { color: var(--foreground); }
+
+.footer-bottom {
+  margin-top: 3rem;
+  display: flex; flex-direction: column; align-items: flex-start;
+  justify-content: space-between; gap: 1.25rem;
+  border-top: 1px solid oklch(0.3 0.03 150 / 0.6);
+  padding-top: 1.5rem;
+}
+@media (min-width: 640px) { .footer-bottom { flex-direction: row; align-items: center; } }
+.footer-copy { font-size: 0.75rem; color: var(--muted-foreground); }
+
+.footer-socials { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+
+/* Social button circle.
+   Original: flex h-9 w-9 items-center justify-center rounded-full
+             border border-border/70 bg-white/[0.03] text-muted-foreground
+             transition-colors hover:border-primary/50 hover:text-primary */
+.social-btn {
+  display: flex; width: 2.25rem; height: 2.25rem;
+  align-items: center; justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid oklch(0.3 0.03 150 / 0.7);
+  background: oklch(1 0 0 / 0.03);
+  color: var(--muted-foreground);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.social-btn:hover {
+  border-color: oklch(0.82 0.22 142 / 0.5);
+  color: var(--primary);
+}
+
+/* SVG icons inside social buttons — sized and centred */
+.social-btn svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+/* GitHub icon uses fill, not stroke */
+.social-btn svg.icon-github {
+  stroke: none;
+  fill: currentColor;
+}
+
+
+/* ============================================================
+   SECTION 16: REDUCED MOTION
+   Respects users who prefer less animation (accessibility).
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .soft-pulse, .marquee-track, .float-card,
+  .spin-wheel, .halo-pulse { animation: none !important; }
+  .tap-scale, .nav-link, .portal-option,
+  .btn-primary, .btn-secondary { transition: none !important; }
+  .anim-fade-up, .anim-scale-in,
+  .anim-slide-left, .anim-slide-right {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  #navbar { opacity: 1 !important; transform: none !important; transition: padding 0.3s ease !important; }
+  .chart-bar { transition: none !important; }
+}
